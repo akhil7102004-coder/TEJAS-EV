@@ -24,3 +24,6 @@ dist/
 
 # Logs
 *.log
+
+# Node.js dependencies
+node_modules/

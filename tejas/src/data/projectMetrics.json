@@ -1,0 +1,69 @@
+{
+  "totalDepots": 92,
+  "totalFleet": 4608,
+  "totalFleetExact": 4608.333333333332,
+  "totalSchedules": 4510,
+  "totalEffectiveKm": 382855996.0,
+  "totalPassengers": 519748722.0,
+  "totalEstimatedCo2": 251453.02518808973,
+  "totalEstimatedEvEnergyMwh": 478591.0,
+  "totalPotentialOpexSavingInr": 9188543904.0,
+  "priorityCounts": {
+    "EV Priority": 17,
+    "Conditional": 53,
+    "Defer / Diesel": 22
+  },
+  "categoryCounts": {
+    "High Priority": 8,
+    "Medium Priority": 13,
+    "Low Priority": 71
+  },
+  "optimizationScenario": {
+    "name": "Scenario-based EV Allocation",
+    "assumptions": {
+      "evBusCostInr": 12000000,
+      "evBusCostCrores": 1.2,
+      "totalScenarioBudgetInr": 1200000000,
+      "totalScenarioBudgetCrores": 120.0,
+      "maxEvBuses": 100,
+      "maxDepotTransitionRate": 0.25,
+      "disclaimer": "\u20b91.20 crore/bus and the 25% depot limit are PROJECT SCENARIO ASSUMPTIONS, not official KSRTC procurement policy."
+    },
+    "totals": {
+      "optimizedEvBuses": 100,
+      "dieselBusesAfterTransition": 4510,
+      "totalEvInvestmentInr": 1200000000.0,
+      "totalEvInvestmentCrores": 120.0,
+      "expectedAnnualOpexSavingInr": 199386761.35479453,
+      "expectedAnnualOpexSavingCrores": 19.938676135479454,
+      "expectedAnnualCo2ReductionTonnes": 5456.40363140597,
+      "allocatedDepotsCount": 5
+    }
+  },
+  "mlModel": {
+    "name": "Logistic Regression",
+    "scaling": "StandardScaler",
+    "trainingYears": "2022\u20132024",
+    "trainingSamples": 276,
+    "testYear": "2025",
+    "testSamples": 92,
+    "accuracy": 85.87,
+    "macroF1": 85.05,
+    "correctPredictions": "79 / 92",
+    "features": [
+      "Effective KM",
+      "Passengers",
+      "Buses Allocated",
+      "Schedules Allocated",
+      "Estimated CO2 (Tonnes)",
+      "Estimated EV Energy (MWh)",
+      "Potential EV OPEX Saving (INR)",
+      "Terrain_Score"
+    ],
+    "classes": [
+      "Conditional",
+      "Defer / Diesel",
+      "EV Priority"
+    ]
+  }
+}

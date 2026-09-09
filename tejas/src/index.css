@@ -1,0 +1,330 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans bg-charcoal-dark text-gray-100 antialiased selection:bg-emerald-500/30 selection:text-electric;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(13, 58, 31, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(15, 23, 42, 0.25) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, rgba(0, 255, 136, 0.05) 0px, transparent 50%);
+    background-attachment: fixed;
+    scroll-behavior: smooth;
+  }
+
+  .theme-light {
+    background: #edf5f0 !important;
+    color: #0f172a !important;
+  }
+
+  .theme-light .bg-charcoal-dark,
+  .theme-light .bg-charcoal-dark\/70,
+  .theme-light .bg-charcoal-dark\/95,
+  .theme-light .bg-charcoal-dark\/20,
+  .theme-light .bg-charcoal-dark\/80,
+  .theme-light .bg-charcoal-dark\/50,
+  .theme-light .bg-charcoal-dark\/30 {
+    background-color: rgba(255, 255, 255, 0.72) !important;
+  }
+
+  .theme-light header,
+  .theme-light footer,
+  .theme-light .glass-card,
+  .theme-light .rounded-2xl,
+  .theme-light .rounded-xl,
+  .theme-light .rounded-3xl {
+    background-color: rgba(255, 255, 255, 0.78) !important;
+    border-color: rgba(16, 185, 129, 0.18) !important;
+    color: #0f172a !important;
+  }
+
+  .theme-light .text-gray-100,
+  .theme-light .text-white,
+  .theme-light .text-gray-300,
+  .theme-light .text-gray-400,
+  .theme-light .text-gray-500,
+  .theme-light .text-gray-200 {
+    color: #0f172a !important;
+  }
+
+  .theme-light .border-white\/5,
+  .theme-light .border-white\/10,
+  .theme-light .border-white\/20,
+  .theme-light .border-white\/30 {
+    border-color: rgba(15, 23, 42, 0.12) !important;
+  }
+
+  .theme-light .bg-white\/5,
+  .theme-light .bg-white\/10,
+  .theme-light .bg-white\/15 {
+    background-color: rgba(15, 23, 42, 0.04) !important;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-charcoal-dark/50 border border-white/5 backdrop-blur-md shadow-glass rounded-2xl transition-all duration-300;
+  }
+  
+  .glass-card-hover {
+    @apply hover:bg-charcoal-dark/70 hover:border-emerald-500/20 hover:shadow-glass-glow hover:-translate-y-1;
+  }
+  
+  .glass-card-active {
+    @apply bg-forest-dark/40 border border-emerald-500/30 shadow-glass-glow;
+  }
+
+  .text-glow-electric {
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+  }
+
+  .bg-grid-pattern {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  }
+
+  .btn-electric {
+    @apply relative overflow-hidden bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 shadow-glass hover:shadow-glass-glow text-center;
+  }
+
+  .btn-outline {
+    @apply border border-white/10 hover:border-emerald-500/30 bg-white/5 hover:bg-white/10 text-gray-200 hover:text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 text-center;
+  }
+
+  .cyber-connections {
+    background-image:
+      linear-gradient(to right, transparent 0, transparent 92%, rgba(16, 185, 129, 0.08) 92%, transparent 94%),
+      linear-gradient(to bottom, transparent 0, transparent 92%, rgba(34, 211, 238, 0.06) 92%, transparent 94%);
+    background-size: 140px 140px;
+    mask-image: radial-gradient(circle at center, black 56%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at center, black 56%, transparent 100%);
+  }
+
+  .cyber-connections::before,
+  .cyber-connections::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .cyber-connections::before {
+    background:
+      radial-gradient(circle at 14% 24%, rgba(16, 185, 129, 0.75) 0 1.4px, transparent 1.8px),
+      radial-gradient(circle at 72% 18%, rgba(34, 211, 238, 0.6) 0 1.2px, transparent 1.7px),
+      radial-gradient(circle at 84% 74%, rgba(16, 185, 129, 0.55) 0 1.3px, transparent 1.8px),
+      radial-gradient(circle at 26% 82%, rgba(34, 211, 238, 0.5) 0 1.25px, transparent 1.7px);
+    opacity: 0.9;
+  }
+
+  .cyber-connections::after {
+    background:
+      linear-gradient(to right, transparent 0 18%, rgba(16, 185, 129, 0.12) 18% 18.3%, transparent 18.3% 40%, rgba(34, 211, 238, 0.08) 40% 40.3%, transparent 40.3%),
+      linear-gradient(to bottom, transparent 0 12%, rgba(16, 185, 129, 0.08) 12% 12.2%, transparent 12.2% 66%, rgba(34, 211, 238, 0.08) 66% 66.2%, transparent 66.2%);
+    opacity: 0.65;
+  }
+
+  .tiny-cyber-line {
+    position: absolute;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.28), transparent);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
+    pointer-events: none;
+  }
+
+  .tiny-cyber-line-1 {
+    width: 24rem;
+    height: 1px;
+    top: 24%;
+    left: 16%;
+    transform: rotate(-12deg);
+  }
+
+  .tiny-cyber-line-2 {
+    width: 20rem;
+    height: 1px;
+    top: 54%;
+    right: 10%;
+    transform: rotate(18deg);
+    background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.24), transparent);
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.12);
+  }
+
+  .tiny-cyber-line-3 {
+    width: 16rem;
+    height: 1px;
+    top: 72%;
+    left: 26%;
+    transform: rotate(8deg);
+  }
+
+  .tiny-cyber-dot {
+    position: absolute;
+    border-radius: 9999px;
+    pointer-events: none;
+    animation: tiny-cyber-pulse 3.6s ease-in-out infinite;
+  }
+}
+
+@keyframes tiny-cyber-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 1;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030712;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.4);
+}
+
+/* Custom keyframes and classes for dashboard */
+.dash-glow-green {
+  box-shadow: 0 0 50px -10px rgba(16, 185, 129, 0.15);
+}
+
+.dash-glow-blue {
+  box-shadow: 0 0 50px -10px rgba(59, 130, 246, 0.15);
+}
+
+/* Animated grid lines */
+.grid-lines-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(0deg, transparent 24%, rgba(16, 185, 129, 0.03) 25%, rgba(16, 185, 129, 0.03) 26%, transparent 27%, transparent 74%, rgba(16, 185, 129, 0.03) 75%, rgba(16, 185, 129, 0.03) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(16, 185, 129, 0.03) 25%, rgba(16, 185, 129, 0.03) 26%, transparent 27%, transparent 74%, rgba(16, 185, 129, 0.03) 75%, rgba(16, 185, 129, 0.03) 76%, transparent 77%, transparent);
+  background-size: 50px 50px;
+}
+
+/* Shared page transition */
+.page-shell {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: pageFadeIn 0.55s ease-out forwards;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom visual shapes */
+.dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* LENIS SMOOTH SCROLL INTEGRATION */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* WATER RIPPLE ANIMATION */
+.water-ripple-layer {
+  position: relative;
+  overflow: hidden;
+}
+
+.water-ripple-layer::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.04) 0%, transparent 60%);
+  border: 1px solid rgba(16, 185, 129, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  opacity: 0;
+  animation: ripple 8s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* GLOW LINE CIRCUIT PULSES */
+@keyframes dash-pulse {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+.animate-circuit-flow {
+  stroke-dasharray: 8, 12;
+  animation: dash-pulse 6s linear infinite;
+}
+
+/* GENTLE ROTATION EFFECT */
+.animate-slow-rotate {
+  animation: slow-rotate 30s linear infinite;
+}
+
+@keyframes slow-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
