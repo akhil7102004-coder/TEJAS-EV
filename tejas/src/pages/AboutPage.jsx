@@ -7,28 +7,28 @@ import ScrollReveal from '../components/ScrollReveal';
 const TECHS = [
   { 
     name: 'Scikit-learn', 
-    type: 'Final ML Model Engine', 
-    desc: 'Logistic Regression pipeline with StandardScaler. Achieved 85.87% holdout accuracy and 85.05% Macro F1 on the unseen 2025 test dataset.' 
+    type: 'Tuned Decision Tree Classifier', 
+    desc: 'Tuned DecisionTreeClassifier with entropy criterion, max_depth=6. Achieved 92.37% holdout accuracy, 92.32% macro F1, and 86.30% Group 5-Fold CV F1.' 
   },
   { 
     name: 'Flask Backend API', 
     type: 'Inference REST Service', 
-    desc: 'Lightweight REST API service (Python 3.13) loading the locked tejas_ev_priority_logistic.pkl model for live prediction requests.' 
+    desc: 'Lightweight REST API service (Python 3.13) loading the locked tejas_ev_priority_decision_tree_corrected.pkl model for live prediction requests.' 
   },
   { 
     name: 'Pandas & NumPy', 
     type: 'Data Wrangling Core', 
-    desc: 'Multi-year data aggregation, feature engineering across 92 KSRTC depots, and temporal train-test dataset construction.' 
+    desc: 'Multi-year data aggregation, 13-feature engineering across 92 KSRTC depots, and temporal train-test dataset construction.' 
   },
   { 
-    name: 'SciPy Optimize (MILP)', 
-    type: 'Constrained Allocation', 
-    desc: 'Mixed-Integer Linear Programming solver maximizing priority benefits under budget and depot fleet conversion constraints.' 
+    name: '5-Factor Weighted Priority', 
+    type: 'Transition Ranking System', 
+    desc: 'Composite score: 30% EV Suitability + 25% OPEX Saving + 20% Passenger Demand + 15% Effective KM + 10% Operational Intensity.',
   },
   { 
     name: 'React 18 & Vite', 
     type: 'Frontend Architecture', 
-    desc: 'Modern responsive user interface with glassmorphism design, zero-latency data inspection, and dynamic report exports.' 
+    desc: 'Modern responsive user interface with glassmorphism design, zero-latency data inspection, and dynamic CSV report exports.' 
   },
   { 
     name: 'Recharts & Lucide', 
@@ -51,7 +51,7 @@ export default function AboutPage() {
             About TEJAS-EV Platform
           </h2>
           <p className="text-sm text-gray-400 font-sans mt-1">
-            Transport Electrification and Journey Analytics System: Predicting the Economic and Environmental Impact of Electric Bus Adoption in Kerala.
+            Transport Electrification and Journey Analytics System: Decision-Support Framework for Evaluating Diesel-to-EV Transition Across 92 KSRTC Depots.
           </p>
         </div>
       </ScrollReveal>
@@ -64,28 +64,26 @@ export default function AboutPage() {
           <ScrollReveal yOffset={20} duration={650} delay={100} className="space-y-4 text-sm text-gray-300 leading-relaxed font-sans">
             <h3 className="text-lg font-bold font-montserrat text-white">Core Project Purpose</h3>
             <p>
-              The <strong>TEJAS-EV</strong> system identifies which KSRTC depots should be prioritized for diesel-to-EV transition and which should be deferred, based on economic, environmental, operational, technical, and terrain factors.
+              The <strong>TEJAS-EV</strong> system is an analytical decision-support platform designed to evaluate which KSRTC depots should be prioritized for diesel-to-electric bus transition, which require conditional infrastructure, and which should retain diesel operations based on topography and operational feasibility.
             </p>
             <p>
-              Rather than adopting a blanket electrification strategy that overlooks topographical steepness and grid realities, TEJAS structures decision-making through a rigorous temporal machine learning methodology.
+              Rather than adopting an arbitrary electrification sequence that overlooks steep terrain gradients and grid requirements, TEJAS structures decision-making by clearly separating:
             </p>
             
             <div className="p-4 rounded-xl bg-charcoal-dark border border-white/10 space-y-2 font-mono text-xs text-gray-300">
               <span className="text-emerald-400 font-bold block uppercase tracking-wider">
-                Sequential Project Story Flow:
+                Four Distinct Analytical Pillars:
               </span>
-              <div className="space-y-1 pl-2 text-[11px] text-gray-400">
-                <div>1. Historical KSRTC data (2021–2025 across all 92 operational depots)</div>
-                <div>2. Economic + Environmental + Operational + Technical + Terrain factors</div>
-                <div>3. Logistic Regression predicts 2026 EV transition priority</div>
-                <div>4. 92-depot multi-criteria priority ranking</div>
-                <div>5. Scenario-based constrained MILP EV allocation</div>
-                <div>6. Expected economic (₹19.94 Cr/yr) and environmental (5,456 T/yr) impact</div>
+              <div className="space-y-1.5 pl-2 text-[11px] text-gray-400">
+                <div>1. <strong>Operational Baseline:</strong> Basic dataset features only across all 92 depots (no ML filter).</div>
+                <div>2. <strong>ML EV Suitability:</strong> Tuned Decision Tree categorizing depots into <em>EV Suitable</em>, <em>Conditional</em>, and <em>Diesel Preferred</em>.</div>
+                <div>3. <strong>Transition Priority:</strong> 5-factor weighted score strictly applied to ML-eligible <em>EV Suitable</em> depots.</div>
+                <div>4. <strong>Economic & Environmental Impact:</strong> Transparent OPEX and CO₂ baseline vs realistic 25% phased transition scenarios.</div>
               </div>
             </div>
 
             <p className="border-l-2 border-emerald-500 pl-4 py-1.5 bg-emerald-500/5 font-mono text-xs text-emerald-400">
-              The core decision: "Which KSRTC depots should be prioritized for EV transition, and which should be deferred?"
+              Key finding: High-altitude depots with steep mountainous terrain (such as Munnar and Kattappana, score 0.20) are classified as Diesel Preferred. Based on the Decision Tree's combined operational-demand and terrain feature profile, the depot is not eligible for early EV transition.
             </p>
           </ScrollReveal>
         </div>
@@ -104,41 +102,41 @@ export default function AboutPage() {
               <ul className="space-y-2.5 text-xs text-gray-300 font-mono">
                 <li className="flex justify-between border-b border-white/5 pb-1.5">
                   <span className="text-gray-400">Algorithm:</span>
-                  <span className="font-bold text-white">Logistic Regression</span>
+                  <span className="font-bold text-white">Tuned DecisionTreeClassifier</span>
                 </li>
                 <li className="flex justify-between border-b border-white/5 pb-1.5">
-                  <span className="text-gray-400">Preprocessing:</span>
-                  <span className="font-bold text-white">StandardScaler Pipeline</span>
-                </li>
-                <li className="flex justify-between border-b border-white/5 pb-1.5">
-                  <span className="text-gray-400">Training Target Years:</span>
-                  <span className="font-bold text-white">2022–2024 (276 samples)</span>
-                </li>
-                <li className="flex justify-between border-b border-white/5 pb-1.5">
-                  <span className="text-gray-400">Unseen Holdout Year:</span>
-                  <span className="font-bold text-white">2025 (92 samples)</span>
+                  <span className="text-gray-400">Hyperparameters:</span>
+                  <span className="font-bold text-white">criterion=entropy, max_depth=6</span>
                 </li>
                 <li className="flex justify-between border-b border-white/5 pb-1.5">
                   <span className="text-gray-400">Holdout Accuracy:</span>
-                  <span className="font-bold text-electric">85.87%</span>
+                  <span className="font-bold text-emerald-400">92.37%</span>
                 </li>
                 <li className="flex justify-between border-b border-white/5 pb-1.5">
                   <span className="text-gray-400">Macro F1 Score:</span>
-                  <span className="font-bold text-electric">85.05%</span>
+                  <span className="font-bold text-electric">92.32%</span>
                 </li>
                 <li className="flex justify-between border-b border-white/5 pb-1.5">
-                  <span className="text-gray-400">Correct Predictions:</span>
-                  <span className="font-bold text-white">79 / 92 Depots</span>
+                  <span className="text-gray-400">5-Fold Group CV F1:</span>
+                  <span className="font-bold text-white">86.30%</span>
+                </li>
+                <li className="flex justify-between border-b border-white/5 pb-1.5">
+                  <span className="text-gray-400">Target Classes (3):</span>
+                  <span className="font-bold text-emerald-400">EV Suitable (22) | Conditional (54) | Diesel (16)</span>
                 </li>
                 <li className="flex justify-between pb-1">
-                  <span className="text-gray-400">Target Classes:</span>
-                  <span className="font-bold text-emerald-400">EV Priority, Conditional, Defer/Diesel</span>
+                  <span className="text-gray-400">Model Artifact:</span>
+                  <span className="font-bold text-white truncate max-w-[210px]">tejas_ev_priority_decision_tree_corrected.pkl</span>
                 </li>
               </ul>
 
               <div className="p-2.5 rounded-lg bg-charcoal-dark/80 border border-white/10 text-[10px] text-gray-400">
-                <span className="text-emerald-400 font-bold block mb-1">8 FINAL INPUT FEATURES:</span>
-                Effective KM, Passengers, Buses Allocated, Schedules Allocated, Estimated CO₂ (Tonnes), Estimated EV Energy (MWh), Potential EV OPEX Saving (INR), Terrain_Score.
+                <span className="text-emerald-400 font-bold block mb-1">13 FINAL INPUT FEATURES:</span>
+                Buses, Schedules, Passengers, Diesel Litres, CO₂ Tonnes, Effective KM, EV Energy, Passengers/Bus, Passengers/Schedule, Diesel/Bus, Diesel/Schedule, CO₂/Bus, Terrain_Score.
+              </div>
+
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-200/90 font-sans leading-relaxed">
+                The Decision Tree evaluates its ability to reproduce the project-defined EV suitability categories from operational and terrain features; these metrics do not represent accuracy against historical EV deployment outcomes.
               </div>
             </div>
           </ScrollReveal>
@@ -152,7 +150,7 @@ export default function AboutPage() {
           <div className="flex items-center gap-2.5">
             <div className="w-1.5 h-6 rounded-full bg-emerald-500"></div>
             <h3 className="text-lg font-bold font-montserrat text-white">
-              Data Sources & Assumptions Disclosure
+              Analytical Scope & Assumptions Disclosure
             </h3>
           </div>
 
@@ -162,7 +160,7 @@ export default function AboutPage() {
                 1. Dataset-Derived Values
               </span>
               <p className="text-gray-300">
-                Buses, schedules, effective kilometers, passengers, and terrain categories from historical KSRTC operational records.
+                Buses, schedules, effective kilometers, passengers, diesel consumption, and terrain scores across all 92 KSRTC operational depots.
               </p>
             </div>
 
@@ -171,110 +169,68 @@ export default function AboutPage() {
                 2. Project Assumptions
               </span>
               <p className="text-gray-300">
-                EV bus Capex of ₹1.20 Cr/bus, diesel CO₂ emissions factor, and 25% fleet transition cap. These are scenario assumptions, not official KSRTC procurement policy.
+                ₹24.0/km net OPEX saving differential, 1.25 kWh/km EV energy intensity, 2.68 kg CO₂/L diesel emission factor, and 25% phased transition horizon.
               </p>
             </div>
 
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
               <span className="text-[10px] font-mono uppercase font-bold text-blue-400 block">
-                3. ML Predictions
+                3. Decision Tree Outputs
               </span>
               <p className="text-gray-300">
-                2026 priority class, posterior probabilities, prediction confidence, and ML suitability scores generated by the finalized Logistic Regression model.
+                Tuned Decision Tree predictions, posterior probabilities, and feasibility tiers (22 EV Suitable, 54 Conditional, 16 Diesel Preferred).
               </p>
             </div>
 
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
               <span className="text-[10px] font-mono uppercase font-bold text-purple-400 block">
-                4. Optimization Outputs
+                4. Priority Ranking
               </span>
               <p className="text-gray-300">
-                100 EV bus integer allocation, remaining diesel counts, and expected annual savings. Scenario-based decision support, not official deployment.
+                5-factor weighted score strictly on EV Suitable depots. Top 10: Thampanoor, Thrissur, Kozhikode, Kollam, Palakkad, Kayamkulam, Kottarakkara, Kannur, Thiruvalla, Aluva.
               </p>
             </div>
           </div>
         </div>
       </ScrollReveal>
 
-      {/* PIPELINE WORKFLOW */}
+      {/* PIPELINE WORKFLOW (15 STAGES) */}
       <ScrollReveal yOffset={25} duration={700}>
         <div className="space-y-6 relative z-10">
           <div className="flex items-center gap-2.5">
             <div className="w-1.5 h-6 rounded-full bg-emerald-500"></div>
-            <h3 className="text-lg font-bold font-montserrat text-white">
-              End-to-End Analytical Workflow
-            </h3>
+            <div>
+              <h3 className="text-lg font-bold font-montserrat text-white">
+                End-to-End Analytical Pipeline (15 Stages)
+              </h3>
+              <span className="text-xs text-gray-400">From historical KSRTC operational telemetry to live Decision Tree scenario simulation.</span>
+            </div>
           </div>
+
           <WorkflowDiagram />
         </div>
       </ScrollReveal>
 
-      {/* TECH INTEGRATION CHECKLIST */}
-      <div className="space-y-6 relative z-10">
-        <ScrollReveal yOffset={15} duration={600}>
-          <div className="flex items-center gap-2.5">
-            <div className="w-1.5 h-6 rounded-full bg-emerald-500"></div>
-            <h3 className="text-lg font-bold font-montserrat text-white">
-              Technology Stack Architecture
-            </h3>
-          </div>
-        </ScrollReveal>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {TECHS.map((tech, index) => (
-            <ScrollReveal key={tech.name} delay={index * 40} yOffset={20} duration={600} className="h-full">
-              <TiltCard maxTilt={6} className="p-5 border-white/5 h-full">
-                <div className="flex justify-between items-start mb-2">
-                  <span className="font-montserrat font-bold text-white text-base">{tech.name}</span>
-                  <span className="px-2 py-0.5 rounded text-[8px] font-mono font-bold bg-white/5 border border-white/5 text-gray-400 uppercase">
-                    CORE
-                  </span>
-                </div>
-                <span className="text-[10px] font-mono text-emerald-400 block mb-2 uppercase">{tech.type}</span>
-                <p className="text-xs text-gray-400 leading-relaxed font-sans">{tech.desc}</p>
-              </TiltCard>
-            </ScrollReveal>
-          ))}
-        </div>
-      </div>
-
-      {/* DEV TEAM INFO */}
+      {/* TECH STACK GRID */}
       <ScrollReveal yOffset={25} duration={700}>
         <div className="space-y-6 relative z-10">
           <div className="flex items-center gap-2.5">
             <div className="w-1.5 h-6 rounded-full bg-emerald-500"></div>
-            <h3 className="text-lg font-bold font-montserrat text-white">Project Development Team</h3>
+            <h3 className="text-lg font-bold font-montserrat text-white">
+              Technology Stack
+            </h3>
           </div>
 
-          <div className="glass-card p-6 border-white/5 flex flex-col md:flex-row items-start justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="p-3.5 rounded-2xl bg-emerald-500/10 text-electric border border-emerald-500/20">
-                <Users2 className="w-6 h-6" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {TECHS.map((tech) => (
+              <div key={tech.name} className="glass-card p-5 border-white/5 hover:border-emerald-500/20 transition-colors">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="text-sm font-bold font-montserrat text-white">{tech.name}</span>
+                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">{tech.type}</span>
+                </div>
+                <p className="text-xs text-gray-400 font-sans leading-relaxed">{tech.desc}</p>
               </div>
-              <div>
-                <h4 className="text-base font-bold font-montserrat text-white">Group Name: EPSILON</h4>
-                <p className="text-xs text-gray-300 font-sans mt-1">
-                  <strong>Group Members:</strong> Akhil A, Sreethi, Aswathy Jaiin, Asna Raliya
-                </p>
-                <p className="text-xs text-gray-400 font-sans mt-0.5">
-                  <strong>Project Guide:</strong> Anitha B
-                </p>
-                <p className="text-xs text-emerald-400 font-mono mt-1">
-                  ICT ACADEMY OF KERALA — Batch 10
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex gap-6 font-mono text-xs text-gray-400">
-              <div>
-                <span className="text-emerald-400 block font-bold">PROJECT GUIDE</span>
-                <span>Anitha B</span>
-              </div>
-              <div>
-                <span className="text-emerald-400 block font-bold">BATCH</span>
-                <span>Batch 10</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </ScrollReveal>

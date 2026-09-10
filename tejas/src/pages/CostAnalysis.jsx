@@ -15,7 +15,7 @@ export default function CostAnalysis() {
   const topOpexDepots = useMemo(() => {
     let list = [...depotsData];
     if (selectedCategory !== 'ALL') {
-      list = list.filter(d => d.Final_Transition_Category === selectedCategory);
+      list = list.filter(d => (d.ML_Dominant_Category || d.Final_Transition_Category) === selectedCategory);
     }
     return list
       .sort((a, b) => b['Potential EV OPEX Saving (INR)'] - a['Potential EV OPEX Saving (INR)'])
@@ -23,18 +23,19 @@ export default function CostAnalysis() {
       .map(d => ({
         name: d['Depot Name'],
         rank: d['Transition_Rank'],
+        category: d['ML_Dominant_Category'],
         potentialCr: +(d['Potential EV OPEX Saving (INR)'] / 1e7).toFixed(2),
-        allocatedEVs: d['Optimized_EV_Buses'] || 0,
-        expectedCr: +((d['Expected_Annual_OPEX_Saving_INR'] || 0) / 1e7).toFixed(2),
-        opexPerBusLakh: +((d['OPEX_Saving_Per_Bus'] || 0) / 1e5).toFixed(2)
+        saving25pctCr: +((d['Potential EV OPEX Saving (INR)'] * 0.25) / 1e7).toFixed(2),
+        effectiveKm: d['Effective KM']
       }));
   }, [selectedCategory]);
 
-  // Scenario allocated depots economic details
-  const allocatedEconomicList = useMemo(() => {
+  // Top 10 Transition Priority Candidate Depots for 25% Phased Electrification
+  const top10Candidates = useMemo(() => {
     return depotsData
-      .filter(d => (d.Optimized_EV_Buses || 0) > 0)
-      .sort((a, b) => a.Transition_Rank - b.Transition_Rank);
+      .filter(d => d.ML_Dominant_Category === 'EV Suitable' && d.Transition_Rank)
+      .sort((a, b) => a.Transition_Rank - b.Transition_Rank)
+      .slice(0, 10);
   }, []);
 
   return (
@@ -47,10 +48,10 @@ export default function CostAnalysis() {
             TECHNO-ECONOMIC ANALYSIS
           </span>
           <h2 className="text-3xl font-bold font-montserrat text-white mt-1">
-            Economic Impact & Cost Analysis
+            Economic Impact & OPEX Analysis
           </h2>
           <p className="text-sm text-gray-400 font-sans mt-1">
-            Financial evaluation of diesel-to-EV transition across all 92 KSRTC depots based on finalized project models and scenario-based EV allocations.
+            Financial evaluation of diesel-to-EV transition across all 92 KSRTC depots. Clearly separates 100% theoretical statewide potential from the realistic 25% phased electrification scenario.
           </p>
         </div>
       </ScrollReveal>
@@ -61,27 +62,27 @@ export default function CostAnalysis() {
         <ScrollReveal yOffset={20} duration={600} delay={50}>
           <TiltCard maxTilt={5} className="p-6 border-emerald-500/20 bg-emerald-950/10 h-full">
             <span className="text-[10px] font-mono text-emerald-400 uppercase font-bold block">
-              Total Potential OPEX Saving
+              100% Potential OPEX Saving
             </span>
             <span className="text-3xl font-bold font-montserrat text-electric mt-1 block">
-              ₹{(projectMetrics.totalPotentialOpexSavingInr / 1e7).toFixed(2)} Cr
+              ₹{projectMetrics.annualOpexSavingCrores.toFixed(2)} Cr
             </span>
             <span className="text-[10px] text-gray-400 font-mono mt-2 block">
-              Statewide annual potential if 100% converted
+              Theoretical annual ceiling if all 92 depots convert 100%
             </span>
           </TiltCard>
         </ScrollReveal>
 
         <ScrollReveal yOffset={20} duration={600} delay={100}>
-          <TiltCard maxTilt={5} className="p-6 border-white/10 h-full">
-            <span className="text-[10px] font-mono text-gray-400 uppercase font-bold block">
-              Scenario Allocated EV Saving
+          <TiltCard maxTilt={5} className="p-6 border-emerald-500/30 bg-gradient-to-br from-emerald-900/20 to-charcoal-dark h-full">
+            <span className="text-[10px] font-mono text-emerald-300 uppercase font-bold block">
+              25% Phased Scenario Saving
             </span>
-            <span className="text-3xl font-bold font-montserrat text-white mt-1 block">
-              ₹{projectMetrics.optimizationScenario.totals.expectedAnnualOpexSavingCrores.toFixed(2)} Cr/yr
+            <span className="text-3xl font-bold font-montserrat text-emerald-400 mt-1 block">
+              ₹{projectMetrics.potentialOpexSaving25pctCrores.toFixed(2)} Cr/yr
             </span>
             <span className="text-[10px] text-gray-400 font-mono mt-2 block">
-              Achieved from 100 allocated EV buses
+              Projected annual savings at 25% statewide fleet transition
             </span>
           </TiltCard>
         </ScrollReveal>
@@ -89,13 +90,13 @@ export default function CostAnalysis() {
         <ScrollReveal yOffset={20} duration={600} delay={150}>
           <TiltCard maxTilt={5} className="p-6 border-white/10 h-full">
             <span className="text-[10px] font-mono text-gray-400 uppercase font-bold block">
-              Scenario EV Capex Budget
+              Net Saving Differential
             </span>
             <span className="text-3xl font-bold font-montserrat text-white mt-1 block">
-              ₹{projectMetrics.optimizationScenario.totals.totalEvInvestmentCrores.toFixed(0)} Cr
+              ₹24.00 <span className="text-sm font-normal text-gray-400">/ km</span>
             </span>
             <span className="text-[10px] text-gray-400 font-mono mt-2 block">
-              Assumes ₹1.20 Cr per EV bus
+              Net operational cost delta between diesel and EV per km
             </span>
           </TiltCard>
         </ScrollReveal>
@@ -103,13 +104,13 @@ export default function CostAnalysis() {
         <ScrollReveal yOffset={20} duration={600} delay={200}>
           <TiltCard maxTilt={5} className="p-6 border-white/10 h-full">
             <span className="text-[10px] font-mono text-gray-400 uppercase font-bold block">
-              Avg OPEX Saving / Bus
+              Statewide Baseline Distance
             </span>
-            <span className="text-3xl font-bold font-montserrat text-emerald-400 mt-1 block">
-              ₹19.94 Lakh
+            <span className="text-3xl font-bold font-montserrat text-white mt-1 block">
+              {(projectMetrics.annualTotalEffectiveKm / 1e6).toFixed(1)}M <span className="text-sm font-normal text-gray-400">km</span>
             </span>
             <span className="text-[10px] text-gray-400 font-mono mt-2 block">
-              Annual savings per EV deployed in scenario
+              Annual effective operational runtime across 92 depots
             </span>
           </TiltCard>
         </ScrollReveal>
@@ -127,10 +128,10 @@ export default function CostAnalysis() {
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div>
                   <h3 className="text-base font-bold font-montserrat text-white">
-                    Top 10 Depots by Annual Potential OPEX Saving
+                    Top 10 Depots by Potential OPEX Saving
                   </h3>
                   <span className="text-xs text-gray-400 font-sans mt-0.5 block">
-                    Calculated from baseline diesel runtime differential (in ₹ Crores).
+                    Calculated from baseline runtime differential (in ₹ Crores).
                   </span>
                 </div>
 
@@ -140,8 +141,9 @@ export default function CostAnalysis() {
                   className="bg-charcoal-dark border border-white/10 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none"
                 >
                   <option value="ALL">All Categories</option>
-                  <option value="High Priority">High Priority Only</option>
-                  <option value="Medium Priority">Medium Priority Only</option>
+                  <option value="EV Suitable">EV Suitable Only</option>
+                  <option value="Conditional">Conditional Only</option>
+                  <option value="Diesel Preferred">Diesel Preferred Only</option>
                 </select>
               </div>
 
@@ -163,23 +165,30 @@ export default function CostAnalysis() {
                       contentStyle={{ backgroundColor: '#0f172a', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '11px' }}
                       formatter={(val) => [`₹${val} Crores`, 'Potential OPEX Saving']}
                     />
-                    <Bar dataKey="potentialCr" fill="#10b981" radius={[4, 4, 0, 0]}>
+                    <Bar dataKey="potentialCr" radius={[4, 4, 0, 0]}>
                       {topOpexDepots.map((entry, idx) => (
-                        <Cell key={`bar-${idx}`} fill={entry.allocatedEVs > 0 ? '#10b981' : '#3b82f6'} />
+                        <Cell 
+                          key={`bar-${idx}`} 
+                          fill={entry.category === 'EV Suitable' ? '#10b981' : entry.category === 'Conditional' ? '#3b82f6' : '#f59e0b'} 
+                        />
                       ))}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
 
-              <div className="flex items-center justify-between text-[10px] font-mono text-gray-400 pt-2 border-t border-white/5">
+              <div className="flex flex-wrap items-center justify-between text-[10px] font-mono text-gray-400 pt-2 border-t border-white/5 gap-2">
                 <span className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                  Allocated in 100-EV Scenario
+                  EV Suitable Depots
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-                  Other High Potential Candidates
+                  Conditional Depots
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                  Diesel Preferred Depots
                 </span>
               </div>
 
@@ -187,53 +196,58 @@ export default function CostAnalysis() {
           </ScrollReveal>
         </div>
 
-        {/* Scenario-based EV Investment & Savings Card */}
+        {/* 25% Phased Scenario Breakdown */}
         <div className="lg:col-span-5">
           <ScrollReveal yOffset={25} duration={700} delay={150} className="h-full">
             <div className="glass-card p-6 border-white/5 h-full space-y-6">
               
               <div>
                 <span className="text-[10px] font-mono text-emerald-400 uppercase font-bold tracking-wider block">
-                  SCENARIO PROCUREMENT BREAKDOWN
+                  PHASED ELECTRIFICATION BREAKDOWN
                 </span>
                 <h3 className="text-base font-bold font-montserrat text-white mt-1">
-                  Scenario-based EV Allocation Details
+                  Top 10 Candidate Depots (25% Transition)
                 </h3>
                 <span className="text-xs text-gray-400 font-sans mt-0.5 block">
-                  100 EV buses allocated to maximize Transition Priority Score × EV buses under budget constraints.
+                  Ranked candidate depots eligible for initial 25% phased conversion.
                 </span>
               </div>
 
-              <div className="space-y-3">
-                {allocatedEconomicList.map(depot => (
-                  <div key={depot['Depot ID']} className="p-3.5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-white font-montserrat">{depot['Depot Name']}</span>
-                        <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                          {depot['Optimized_EV_Buses']} EVs
+              <div className="space-y-3 max-h-[360px] overflow-y-auto pr-1">
+                {top10Candidates.map(depot => {
+                  const saving25pct = (Number(depot['Potential EV OPEX Saving (INR)']) * 0.25) / 1e7;
+                  return (
+                    <div key={depot['Depot ID']} className="p-3 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-white font-montserrat">
+                            #{depot['Transition_Rank']} {depot['Depot Name']}
+                          </span>
+                          <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                            {depot['District']}
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-gray-400 font-mono mt-0.5 block">
+                          Annual KM: {(Number(depot['Effective KM']) / 1e6).toFixed(2)}M • 100% Saving: ₹{(Number(depot['Potential EV OPEX Saving (INR)']) / 1e7).toFixed(2)} Cr
                         </span>
                       </div>
-                      <span className="text-[10px] text-gray-400 font-mono mt-1 block">
-                        Capex: ₹{(depot['EV_Investment_INR'] / 1e7).toFixed(1)} Cr • Post Diesel: {depot['Diesel_Buses_After_Transition']}
-                      </span>
-                    </div>
 
-                    <div className="text-right font-mono">
-                      <span className="text-xs font-bold text-electric block">
-                        +₹{(depot['Expected_Annual_OPEX_Saving_INR'] / 1e7).toFixed(2)} Cr/yr
-                      </span>
-                      <span className="text-[9px] text-gray-500">Annual OPEX Saving</span>
+                      <div className="text-right font-mono">
+                        <span className="text-xs font-bold text-electric block">
+                          +₹{saving25pct.toFixed(2)} Cr/yr
+                        </span>
+                        <span className="text-[9px] text-gray-500">25% Scenario Saving</span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Assumption Disclaimer Card */}
               <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 font-sans flex items-start gap-2.5">
                 <Info className="w-4 h-4 shrink-0 mt-0.5 text-amber-400" />
                 <p>
-                  <strong>Project Assumptions:</strong> EV bus Capex of ₹1.20 crore/bus and the 25% depot conversion ceiling are <em>project scenario assumptions</em> for decision support, not official KSRTC procurement policy.
+                  <strong>Analytical Note:</strong> The 100% OPEX figure (₹919.74 Cr) reflects complete electrification potential at ₹24/km net saving. The 25% phased scenario (₹229.93 Cr/yr) represents an actionable near-term transition horizon for Kerala public transit planning.
                 </p>
               </div>
 

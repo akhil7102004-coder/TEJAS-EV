@@ -1,0 +1,24 @@
+{
+  "model": "Tuned Decision Tree Classifier (Corrected Terrain)",
+  "criterion": "entropy",
+  "max_depth": 6,
+  "min_samples_leaf": 1,
+  "min_samples_split": 2,
+  "class_weight": "balanced",
+  "random_state": 42,
+  "accuracy": 0.9237,
+  "macro_precision": 0.9242,
+  "macro_recall": 0.9231,
+  "macro_f1": 0.9232,
+  "group_cv_macro_f1": 0.863,
+  "accuracy_label": "Holdout Test Accuracy \u2014 92.37%",
+  "evaluation_note": "Evaluated on held-out depot observations from the project dataset.",
+  "training_observations": 5520,
+  "depots": 92,
+  "features": 13,
+  "classes": [
+    "Conditional",
+    "Diesel Preferred",
+    "EV Suitable"
+  ]
+}

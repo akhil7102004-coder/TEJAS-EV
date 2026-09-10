@@ -7,11 +7,10 @@ export default function DepotAnalysisTable({ initialDistrict = '' }) {
   const [search, setSearch] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('ALL');
   const [districtFilter, setDistrictFilter] = useState(initialDistrict || 'ALL');
-  const [categoryFilter, setCategoryFilter] = useState('ALL');
-  const [allocationFilter, setAllocationFilter] = useState('ALL');
+  const [terrainFilter, setTerrainFilter] = useState('ALL');
   
-  const [sortField, setSortField] = useState('Transition_Rank');
-  const [sortAsc, setSortAsc] = useState(true);
+  const [sortField, setSortField] = useState('EV_Transition_Priority_Score');
+  const [sortAsc, setSortAsc] = useState(false);
   
   const [pageSize, setPageSize] = useState(15);
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,15 +32,11 @@ export default function DepotAnalysisTable({ initialDistrict = '' }) {
         d['Depot ID']?.toLowerCase().includes(search.toLowerCase()) ||
         d['District']?.toLowerCase().includes(search.toLowerCase());
 
-      const matchesPriority = priorityFilter === 'ALL' || d['Predicted_2026_Priority'] === priorityFilter;
+      const matchesPriority = priorityFilter === 'ALL' || d['ML_Dominant_Category'] === priorityFilter;
       const matchesDistrict = districtFilter === 'ALL' || d['District']?.toLowerCase() === districtFilter.toLowerCase();
-      const matchesCategory = categoryFilter === 'ALL' || d['Final_Transition_Category'] === categoryFilter;
-      const matchesAlloc = 
-        allocationFilter === 'ALL' ||
-        (allocationFilter === 'ALLOCATED' && (d['Optimized_EV_Buses'] || 0) > 0) ||
-        (allocationFilter === 'UNALLOCATED' && (!d['Optimized_EV_Buses'] || d['Optimized_EV_Buses'] === 0));
+      const matchesTerrain = terrainFilter === 'ALL' || d['Terrain_Class'] === terrainFilter;
 
-      return matchesSearch && matchesPriority && matchesDistrict && matchesCategory && matchesAlloc;
+      return matchesSearch && matchesPriority && matchesDistrict && matchesTerrain;
     });
 
     list.sort((a, b) => {
@@ -50,11 +45,11 @@ export default function DepotAnalysisTable({ initialDistrict = '' }) {
       if (typeof aVal === 'string') {
         return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }
-      return sortAsc ? (aVal - bVal) : (bVal - aVal);
+      return sortAsc ? (Number(aVal || 0) - Number(bVal || 0)) : (Number(bVal || 0) - Number(aVal || 0));
     });
 
     return list;
-  }, [search, priorityFilter, districtFilter, categoryFilter, allocationFilter, sortField, sortAsc]);
+  }, [search, priorityFilter, districtFilter, terrainFilter, sortField, sortAsc]);
 
   // Pagination
   const totalRows = filteredDepots.length;
@@ -137,16 +132,16 @@ export default function DepotAnalysisTable({ initialDistrict = '' }) {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-white/5 text-xs">
           
           <div>
-            <label className="text-[9px] font-mono uppercase text-gray-400 font-bold block mb-1">Predicted Priority</label>
+            <label className="text-[9px] font-mono uppercase text-gray-400 font-bold block mb-1">ML Category</label>
             <select
               value={priorityFilter}
               onChange={(e) => { setPriorityFilter(e.target.value); setCurrentPage(1); }}
               className="w-full bg-charcoal-dark border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500/50"
             >
-              <option value="ALL">All Priorities (92)</option>
-              <option value="EV Priority">EV Priority (17)</option>
-              <option value="Conditional">Conditional (53)</option>
-              <option value="Defer / Diesel">Defer / Diesel (22)</option>
+              <option value="ALL">All Categories (92)</option>
+              <option value="EV Suitable">EV Suitable (22)</option>
+              <option value="Conditional">Conditional (54)</option>
+              <option value="Diesel Preferred">Diesel Preferred (16)</option>
             </select>
           </div>
 
@@ -165,29 +160,33 @@ export default function DepotAnalysisTable({ initialDistrict = '' }) {
           </div>
 
           <div>
-            <label className="text-[9px] font-mono uppercase text-gray-400 font-bold block mb-1">Transition Category</label>
+            <label className="text-[9px] font-mono uppercase text-gray-400 font-bold block mb-1">Terrain Class</label>
             <select
-              value={categoryFilter}
-              onChange={(e) => { setCategoryFilter(e.target.value); setCurrentPage(1); }}
+              value={terrainFilter}
+              onChange={(e) => { setTerrainFilter(e.target.value); setCurrentPage(1); }}
               className="w-full bg-charcoal-dark border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500/50"
             >
-              <option value="ALL">All Categories</option>
-              <option value="High Priority">High Priority (8)</option>
-              <option value="Medium Priority">Medium Priority (13)</option>
-              <option value="Low Priority">Low Priority (71)</option>
+              <option value="ALL">All Terrains (5)</option>
+              <option value="Flat">Flat</option>
+              <option value="Flat/Rolling">Flat/Rolling</option>
+              <option value="Rolling">Rolling</option>
+              <option value="Hilly">Hilly</option>
+              <option value="Steep">Steep</option>
             </select>
           </div>
 
           <div>
-            <label className="text-[9px] font-mono uppercase text-gray-400 font-bold block mb-1">Scenario EV Allocation</label>
+            <label className="text-[9px] font-mono uppercase text-gray-400 font-bold block mb-1">Page Size</label>
             <select
-              value={allocationFilter}
-              onChange={(e) => { setAllocationFilter(e.target.value); setCurrentPage(1); }}
+              value={pageSize}
+              onChange={(e) => { setPageSize(e.target.value === 'ALL' ? 'ALL' : Number(e.target.value)); setCurrentPage(1); }}
               className="w-full bg-charcoal-dark border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500/50"
             >
-              <option value="ALL">All Depots</option>
-              <option value="ALLOCATED">Allocated EVs (Top 5)</option>
-              <option value="UNALLOCATED">No Allocation (87)</option>
+              <option value="10">10 per page</option>
+              <option value="15">15 per page</option>
+              <option value="25">25 per page</option>
+              <option value="50">50 per page</option>
+              <option value="ALL">Show All (92)</option>
             </select>
           </div>
 
@@ -279,86 +278,72 @@ export default function DepotAnalysisTable({ initialDistrict = '' }) {
                   </div>
                 </th>
 
-                <th className="p-3 cursor-pointer hover:text-white" onClick={() => handleSort('Predicted_2026_Priority')}>
+                <th className="p-3 cursor-pointer hover:text-white" onClick={() => handleSort('ML_Dominant_Category')}>
                   <div className="flex items-center gap-1">
-                    <span>2026 Priority</span>
+                    <span>ML Category</span>
                     <ArrowUpDown className="w-3 h-3" />
                   </div>
                 </th>
 
-                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Probability_EV Priority')}>
-                  <div className="flex items-center justify-end gap-1">
-                    <span>P(EV)</span>
-                    <ArrowUpDown className="w-3 h-3" />
-                  </div>
-                </th>
-
-                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Probability_Conditional')}>
-                  <div className="flex items-center justify-end gap-1">
-                    <span>P(Cond)</span>
-                    <ArrowUpDown className="w-3 h-3" />
-                  </div>
-                </th>
-
-                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Probability_Defer_Diesel')}>
-                  <div className="flex items-center justify-end gap-1">
-                    <span>P(Defer)</span>
-                    <ArrowUpDown className="w-3 h-3" />
-                  </div>
-                </th>
-
-                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Prediction_Confidence')}>
-                  <div className="flex items-center justify-end gap-1">
-                    <span>Conf</span>
-                    <ArrowUpDown className="w-3 h-3" />
-                  </div>
-                </th>
-
-                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Transition_Priority_Score')}>
+                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('EV_Transition_Priority_Score')}>
                   <div className="flex items-center justify-end gap-1">
                     <span>Priority Score</span>
                     <ArrowUpDown className="w-3 h-3" />
                   </div>
                 </th>
 
-                <th className="p-3 cursor-pointer hover:text-white" onClick={() => handleSort('Final_Transition_Category')}>
-                  <div className="flex items-center gap-1">
-                    <span>Category</span>
+                <th className="p-3 text-center cursor-pointer hover:text-white" onClick={() => handleSort('Final_Priority_Rank')}>
+                  <div className="flex items-center justify-center gap-1">
+                    <span>EV Rank</span>
                     <ArrowUpDown className="w-3 h-3" />
                   </div>
                 </th>
 
-                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Optimized_EV_Buses')}>
+                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('EV_Suitable_Pct')}>
                   <div className="flex items-center justify-end gap-1">
-                    <span>Opt EV</span>
+                    <span>P(EV Suitable)</span>
                     <ArrowUpDown className="w-3 h-3" />
                   </div>
                 </th>
 
-                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Diesel_Buses_After_Transition')}>
+                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Conditional_Pct')}>
                   <div className="flex items-center justify-end gap-1">
-                    <span>Post Diesel</span>
+                    <span>P(Cond)</span>
                     <ArrowUpDown className="w-3 h-3" />
                   </div>
                 </th>
 
-                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('EV_Investment_INR')}>
+                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Diesel_Preferred_Pct')}>
                   <div className="flex items-center justify-end gap-1">
-                    <span>EV Invest (₹)</span>
+                    <span>P(Diesel)</span>
                     <ArrowUpDown className="w-3 h-3" />
                   </div>
                 </th>
 
-                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Expected_Annual_OPEX_Saving_INR')}>
+                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Avg_ML_Confidence')}>
                   <div className="flex items-center justify-end gap-1">
-                    <span>Exp OPEX (₹/yr)</span>
+                    <span>Confidence</span>
                     <ArrowUpDown className="w-3 h-3" />
                   </div>
                 </th>
 
-                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Expected_Annual_CO2_Reduction_Tonnes')}>
+                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Annual_OPEX_Saving_INR')}>
                   <div className="flex items-center justify-end gap-1">
-                    <span>Exp CO₂ (T/yr)</span>
+                    <span>Annual OPEX (₹)</span>
+                    <ArrowUpDown className="w-3 h-3" />
+                  </div>
+                </th>
+
+                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Annual_CO2_Baseline_Tonnes')}>
+                  <div className="flex items-center justify-end gap-1">
+                    <span>CO₂ Base (T)</span>
+                    <ArrowUpDown className="w-3 h-3" />
+                  </div>
+                </th>
+
+                <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('Potential_CO2_Avoided_25pct_Tonnes')}>
+                  <div className="flex items-center justify-end gap-1">
+                    <span>25% CO₂ (T)</span>
                     <ArrowUpDown className="w-3 h-3" />
                   </div>
                 </th>
@@ -368,18 +353,12 @@ export default function DepotAnalysisTable({ initialDistrict = '' }) {
             </thead>
 
             <tbody className="divide-y divide-white/5 font-sans text-gray-300">
-              {displayedDepots.map((depot) => {
+              {displayedDepots.map((depot, idx) => {
+                const mlCategory = depot['ML_Dominant_Category'] || 'Conditional';
                 const priorityBadge = 
-                  depot['Predicted_2026_Priority'] === 'EV Priority' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' :
-                  depot['Predicted_2026_Priority'] === 'Conditional' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' :
+                  mlCategory === 'EV Suitable' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' :
+                  mlCategory === 'Conditional' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' :
                   'bg-amber-500/10 text-amber-400 border-amber-500/30';
-
-                const categoryBadge = 
-                  depot['Final_Transition_Category'] === 'High Priority' ? 'text-emerald-400' :
-                  depot['Final_Transition_Category'] === 'Medium Priority' ? 'text-blue-400' :
-                  'text-gray-400';
-
-                const hasAllocation = (depot['Optimized_EV_Buses'] || 0) > 0;
 
                 return (
                   <tr 
@@ -388,7 +367,7 @@ export default function DepotAnalysisTable({ initialDistrict = '' }) {
                     className="hover:bg-white/5 transition-colors cursor-pointer group"
                   >
                     <td className="p-3 pl-4 font-mono font-bold text-electric">
-                      #{depot['Transition_Rank']}
+                      {depot['Final_Priority_Rank'] ? `#${depot['Final_Priority_Rank']}` : `—`}
                     </td>
 
                     <td className="p-3 font-mono text-gray-400">
@@ -404,87 +383,79 @@ export default function DepotAnalysisTable({ initialDistrict = '' }) {
                     </td>
 
                     <td className="p-3 text-right font-mono">
-                      {Number(depot['Buses Allocated']).toFixed(1)}
+                      {Number(depot['Buses Allocated'] || 0).toFixed(1)}
                     </td>
 
                     <td className="p-3 text-right font-mono">
-                      {Number(depot['Schedules Allocated']).toFixed(1)}
+                      {Number(depot['Schedules Allocated'] || 0).toFixed(1)}
                     </td>
 
                     <td className="p-3 text-right font-mono">
-                      {(Number(depot['Effective KM']) / 1e5).toFixed(2)} L
+                      {Math.round(depot['Effective KM'] || 0).toLocaleString('en-IN')}
                     </td>
 
                     <td className="p-3 text-right font-mono">
-                      {(Number(depot['Passengers']) / 1e5).toFixed(2)} L
+                      {Math.round(depot['Passengers'] || 0).toLocaleString('en-IN')}
                     </td>
 
                     <td className="p-3 text-right font-mono">
-                      {Number(depot['Estimated CO2 (Tonnes)']).toFixed(0)}
+                      {Number(depot['Annual_CO2_Baseline_Tonnes'] || 0).toFixed(0)}
                     </td>
 
                     <td className="p-3 text-right font-mono text-electric">
-                      ₹{(Number(depot['Potential EV OPEX Saving (INR)']) / 1e7).toFixed(2)} Cr
+                      ₹{(Number(depot['Annual_OPEX_Saving_INR'] || 0) / 1e7).toFixed(2)} Cr
                     </td>
 
-                    <td className="p-3 text-center font-mono">
-                      {depot['Terrain_Score']}
+                    <td className="p-3 text-center font-mono text-xs">
+                      {depot['Terrain_Class']}
                     </td>
 
                     <td className="p-3 whitespace-nowrap">
                       <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold border ${priorityBadge}`}>
-                        {depot['Predicted_2026_Priority']}
+                        {mlCategory}
                       </span>
                     </td>
 
-                    <td className="p-3 text-right font-mono text-emerald-400">
-                      {((depot['Probability_EV Priority'] || 0) * 100).toFixed(1)}%
-                    </td>
-
-                    <td className="p-3 text-right font-mono text-blue-400">
-                      {((depot['Probability_Conditional'] || 0) * 100).toFixed(1)}%
-                    </td>
-
-                    <td className="p-3 text-right font-mono text-amber-400">
-                      {((depot['Probability_Defer_Diesel'] || 0) * 100).toFixed(1)}%
-                    </td>
-
-                    <td className="p-3 text-right font-mono">
-                      {((depot['Prediction_Confidence'] || 0) * 100).toFixed(1)}%
-                    </td>
-
                     <td className="p-3 text-right font-mono font-bold text-white">
-                      {(Number(depot['Transition_Priority_Score']) * 100).toFixed(1)}%
+                      {(Number(depot['EV_Transition_Priority_Score'] || 0) * 100).toFixed(1)}%
                     </td>
 
-                    <td className={`p-3 font-mono font-bold whitespace-nowrap ${categoryBadge}`}>
-                      {depot['Final_Transition_Category']}
-                    </td>
-
-                    <td className="p-3 text-right font-mono font-bold">
-                      {hasAllocation ? (
+                    <td className="p-3 text-center font-mono font-bold text-electric">
+                      {depot['Final_Priority_Rank'] ? (
                         <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-electric border border-emerald-500/30">
-                          {depot['Optimized_EV_Buses']}
+                          #{depot['Final_Priority_Rank']}
                         </span>
                       ) : (
-                        <span className="text-gray-500">0</span>
+                        <span className="text-gray-500">—</span>
                       )}
                     </td>
 
-                    <td className="p-3 text-right font-mono">
-                      {depot['Diesel_Buses_After_Transition']}
+                    <td className="p-3 text-right font-mono text-emerald-400">
+                      {Number(depot['EV_Suitable_Pct'] || 0).toFixed(1)}%
                     </td>
 
-                    <td className="p-3 text-right font-mono">
-                      {hasAllocation ? `₹${(Number(depot['EV_Investment_INR']) / 1e7).toFixed(1)} Cr` : '—'}
+                    <td className="p-3 text-right font-mono text-blue-400">
+                      {Number(depot['Conditional_Pct'] || 0).toFixed(1)}%
                     </td>
 
-                    <td className="p-3 text-right font-mono text-electric">
-                      {hasAllocation ? `₹${(Number(depot['Expected_Annual_OPEX_Saving_INR']) / 1e7).toFixed(2)} Cr` : '—'}
+                    <td className="p-3 text-right font-mono text-amber-400">
+                      {Number(depot['Diesel_Preferred_Pct'] || 0).toFixed(1)}%
                     </td>
 
-                    <td className="p-3 text-right font-mono">
-                      {hasAllocation ? `${Number(depot['Expected_Annual_CO2_Reduction_Tonnes']).toFixed(1)} T` : '—'}
+                    <td className="p-3 text-right font-mono text-gray-300">
+                      {(Number(depot['Avg_ML_Confidence'] || 0) * 100).toFixed(1)}%
+                    </td>
+
+                    <td className="p-3 text-right font-mono text-electric font-semibold">
+                      ₹{(Number(depot['Annual_OPEX_Saving_INR'] || 0) / 1e7).toFixed(2)} Cr
+                    </td>
+
+                    <td className="p-3 text-right font-mono text-gray-300">
+                      {Math.round(depot['Annual_CO2_Baseline_Tonnes'] || 0).toLocaleString('en-IN')} T
+                    </td>
+
+                    <td className="p-3 text-right font-mono text-purple-300">
+                      {Math.round(depot['Potential_CO2_Avoided_25pct_Tonnes'] || 0).toLocaleString('en-IN')} T
                     </td>
 
                     <td className="p-3 pr-4 text-center">
@@ -499,6 +470,8 @@ export default function DepotAnalysisTable({ initialDistrict = '' }) {
                   </tr>
                 );
               })}
+
+
 
               {displayedDepots.length === 0 && (
                 <tr>

@@ -1,0 +1,24 @@
+{
+    "model": "Tuned Decision Tree",
+    "features": [
+        "Buses Allocated",
+        "Schedules Allocated",
+        "Passengers",
+        "Estimated Diesel Litres",
+        "Estimated CO2 (Tonnes)",
+        "Effective KM",
+        "Estimated EV Energy (MWh)",
+        "Passengers_per_Bus",
+        "Passengers_per_Schedule",
+        "Diesel_Litres_per_Bus",
+        "Diesel_Litres_per_Schedule",
+        "CO2_per_Bus_Tonnes",
+        "Terrain_Score"
+    ],
+    "target": "EV_Category",
+    "classes": [
+        "Conditional",
+        "Diesel Preferred",
+        "EV Suitable"
+    ]
+}

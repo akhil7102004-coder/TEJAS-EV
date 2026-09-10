@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Lenis from 'lenis';
-import { Menu, X, Landmark, Compass, HelpCircle, FileBarChart, Zap, Leaf, BarChart3, Sun, Moon } from 'lucide-react';
+import { Menu, X, Landmark, Compass, HelpCircle, FileBarChart, Zap, Leaf, BarChart3, Sun, Moon, Activity } from 'lucide-react';
 import TejasLogo from './components/TejasLogo';
 import LandingPage from './pages/LandingPage';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
+import OperationalAnalysis from './pages/OperationalAnalysis';
 import RouteAnalysis from './pages/RouteAnalysis';
 import CostAnalysis from './pages/CostAnalysis';
 import EmissionAnalysis from './pages/EmissionAnalysis';
@@ -19,6 +20,7 @@ import InteractiveBackground from './components/InteractiveBackground';
 const navItems = [
   { id: 'home', label: 'Home', icon: Compass },
   { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+  { id: 'operational-analysis', label: 'Operational & Demand', icon: Activity },
   { id: 'depot-analysis', label: 'Depot Analysis', icon: BarChart3 },
   { id: 'route-analysis', label: 'Route Analysis', icon: Zap },
   { id: 'cost-analysis', label: 'Cost Analysis', icon: Landmark },
@@ -244,6 +246,14 @@ export default function App() {
 
           <section id="dashboard" className="scroll-mt-24">
             <DashboardPage />
+          </section>
+
+          <div className="w-full max-w-7xl mx-auto px-6 lg:px-12">
+            <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+          </div>
+
+          <section id="operational-analysis" className="scroll-mt-24">
+            <OperationalAnalysis />
           </section>
 
           <div className="w-full max-w-7xl mx-auto px-6 lg:px-12">

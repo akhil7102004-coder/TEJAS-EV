@@ -72,7 +72,7 @@ export default function RouteAnalysis() {
             Depot Operational Corridors & Terrain Analysis
           </h2>
           <p className="text-sm text-gray-400 font-sans mt-1">
-            Evaluates topographical suitability and elevation constraints across KSRTC depot operational corridors. Based on authentic dataset classifications without fabricated route distances.
+            Evaluates topographical suitability and elevation constraints across KSRTC depot operational corridors. Based on project-defined depot/corridor terrain classifications without fabricated route distances.
           </p>
         </div>
       </ScrollReveal>
@@ -84,7 +84,7 @@ export default function RouteAnalysis() {
           <div>
             <span className="font-bold text-white block mb-0.5">Dataset Route Distance Note</span>
             <p>
-              In the finalized KSRTC project dataset, route distance (<code>Distance_KM</code>) is unavailable. The evaluation therefore assesses depot-level operational corridors using authenticated geographic corridor terrain classifications (Flat, Flat/Rolling, Rolling, Hilly, Steep) and terrain scores (0.20 to 1.00). No simulated route distances are displayed.
+              In the finalized KSRTC project dataset, route distance (<code>Distance_KM</code>) is unavailable. The evaluation therefore assesses depot-level operational corridors using project-defined depot/corridor terrain classifications (Flat, Flat/Rolling, Rolling, Hilly, Steep) and terrain scores (0.20 to 1.00). No simulated route distances are displayed.
             </p>
           </div>
         </div>

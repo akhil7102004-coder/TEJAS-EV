@@ -1,69 +1,56 @@
 {
   "totalDepots": 92,
-  "totalFleet": 4608,
-  "totalFleetExact": 4608.333333333332,
-  "totalSchedules": 4510,
-  "totalEffectiveKm": 382855996.0,
-  "totalPassengers": 519748722.0,
-  "totalEstimatedCo2": 251453.02518808973,
-  "totalEstimatedEvEnergyMwh": 478591.0,
-  "totalPotentialOpexSavingInr": 9188543904.0,
-  "priorityCounts": {
-    "EV Priority": 17,
-    "Conditional": 53,
-    "Defer / Diesel": 22
-  },
+  "totalDistricts": 14,
+  "totalBuses": 7454.266666666666,
+  "totalSchedules": 589.8154999999998,
+  "avgBusesPerDepot": 81.02463768115942,
+  "avgSchedulesPerDepot": 6.411038043478259,
+  "avgPassengersPerDepot": 317300.280615942,
+  "avgEffectiveKmPerDepot": 347123.7242789855,
+  "monthlyTotalPassengers": 29191625.816666666,
+  "monthlyTotalEffectiveKm": 31935382.633666668,
+  "annualTotalPassengers": 350299509.8,
+  "annualTotalEffectiveKm": 383224591.60400003,
+  "annualDieselLitres": 93927595.99,
+  "annualCo2BaselineTonnes": 251725.95,
+  "annualOpexSavingInr": 9197390200.41,
+  "annualOpexSavingCrores": 919.74,
+  "annualEvEnergyMwh": 479030.74,
+  "potentialCo2Avoided25pctTonnes": 62931.49,
+  "potentialOpexSaving25pctInr": 2299347550.1,
+  "potentialOpexSaving25pctCrores": 229.93,
   "categoryCounts": {
-    "High Priority": 8,
-    "Medium Priority": 13,
-    "Low Priority": 71
+    "EV Suitable": 22,
+    "Conditional": 54,
+    "Diesel Preferred": 16
   },
-  "optimizationScenario": {
-    "name": "Scenario-based EV Allocation",
-    "assumptions": {
-      "evBusCostInr": 12000000,
-      "evBusCostCrores": 1.2,
-      "totalScenarioBudgetInr": 1200000000,
-      "totalScenarioBudgetCrores": 120.0,
-      "maxEvBuses": 100,
-      "maxDepotTransitionRate": 0.25,
-      "disclaimer": "\u20b91.20 crore/bus and the 25% depot limit are PROJECT SCENARIO ASSUMPTIONS, not official KSRTC procurement policy."
-    },
-    "totals": {
-      "optimizedEvBuses": 100,
-      "dieselBusesAfterTransition": 4510,
-      "totalEvInvestmentInr": 1200000000.0,
-      "totalEvInvestmentCrores": 120.0,
-      "expectedAnnualOpexSavingInr": 199386761.35479453,
-      "expectedAnnualOpexSavingCrores": 19.938676135479454,
-      "expectedAnnualCo2ReductionTonnes": 5456.40363140597,
-      "allocatedDepotsCount": 5
-    }
-  },
+  "terrainCounts": {
+  "Flat/Rolling": 59,
+  "Rolling": 16,
+  "Flat": 8,
+  "Hilly": 6,
+  "Steep": 3
+},
   "mlModel": {
-    "name": "Logistic Regression",
-    "scaling": "StandardScaler",
-    "trainingYears": "2022\u20132024",
-    "trainingSamples": 276,
-    "testYear": "2025",
-    "testSamples": 92,
-    "accuracy": 85.87,
-    "macroF1": 85.05,
-    "correctPredictions": "79 / 92",
-    "features": [
-      "Effective KM",
-      "Passengers",
-      "Buses Allocated",
-      "Schedules Allocated",
-      "Estimated CO2 (Tonnes)",
-      "Estimated EV Energy (MWh)",
-      "Potential EV OPEX Saving (INR)",
-      "Terrain_Score"
-    ],
+    "model": "Tuned Decision Tree Classifier (Corrected Terrain)",
+    "criterion": "entropy",
+    "max_depth": 6,
+    "min_samples_leaf": 1,
+    "min_samples_split": 2,
+    "accuracy": 92.37,
+    "macro_precision": 92.42,
+    "macro_recall": 92.31,
+    "macro_f1": 92.32,
+    "group_cv_macro_f1": 86.3,
+    "accuracy_label": "Holdout Test Accuracy \u2014 92.37%",
+    "evaluation_note": "Evaluated on held-out depot observations from the project dataset.",
+    "training_observations": 5520,
+    "depots": 92,
+    "features": 13,
     "classes": [
       "Conditional",
-      "Defer / Diesel",
-      "EV Priority"
+      "Diesel Preferred",
+      "EV Suitable"
     ]
   }
 }

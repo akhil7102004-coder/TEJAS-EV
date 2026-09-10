@@ -2,40 +2,51 @@ import React, { useMemo, useState } from 'react';
 import { 
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell
 } from 'recharts';
-import { Leaf, Award, Shield, Info, CheckCircle2, TrendingDown } from 'lucide-react';
+import { Leaf, Award, Shield, Info, CheckCircle2, TrendingDown, Fuel, Wind } from 'lucide-react';
 import TiltCard from '../components/TiltCard';
 import ScrollReveal from '../components/ScrollReveal';
 import depotsData from '../data/depotsData.json';
 import projectMetrics from '../data/projectMetrics.json';
 
 export default function EmissionAnalysis() {
-  const [viewMode, setViewMode] = useState('allocated'); // 'allocated' or 'baseline'
-
-  // Depots with scenario CO2 reduction
-  const allocatedEmissions = useMemo(() => {
-    return depotsData
-      .filter(d => (d.Optimized_EV_Buses || 0) > 0)
-      .sort((a, b) => b.Expected_Annual_CO2_Reduction_Tonnes - a.Expected_Annual_CO2_Reduction_Tonnes)
-      .map(d => ({
-        name: d['Depot Name'],
-        evBuses: d.Optimized_EV_Buses,
-        co2ReductionTonnes: +d.Expected_Annual_CO2_Reduction_Tonnes.toFixed(1),
-        baselineCo2Tonnes: +d['Estimated CO2 (Tonnes)'].toFixed(1),
-        perBusTonnes: +d.CO2_Reduction_Per_Bus.toFixed(1)
-      }));
-  }, []);
+  const [viewMode, setViewMode] = useState('phased'); // 'phased' or 'baseline'
 
   // Top baseline CO2 emitters
   const topBaselineEmitters = useMemo(() => {
     return [...depotsData]
       .sort((a, b) => b['Estimated CO2 (Tonnes)'] - a['Estimated CO2 (Tonnes)'])
       .slice(0, 10)
-      .map(d => ({
-        name: d['Depot Name'],
-        baselineCo2Tonnes: +d['Estimated CO2 (Tonnes)'].toFixed(1),
-        buses: +d['Buses Allocated'].toFixed(1),
-        allocatedEVs: d['Optimized_EV_Buses'] || 0
-      }));
+      .map(d => {
+        const annualKm = Number(d.Annual_Effective_KM || (d.Avg_Effective_KM ? d.Avg_Effective_KM * 12 : (d['Effective KM'] ? d['Effective KM'] * 12 : 0)));
+        const annualDiesel = Number(d.Annual_Diesel_Litres || (annualKm / 4.08));
+        return {
+          name: d['Depot Name'],
+          baselineCo2Tonnes: +Number(d['Estimated CO2 (Tonnes)'] || d.Annual_CO2_Baseline_Tonnes || 0).toFixed(1),
+          dieselLitres: Math.round(annualDiesel),
+          category: d['ML_Dominant_Category'],
+          co2Avoided25pct: +(Number(d['Estimated CO2 (Tonnes)'] || d.Annual_CO2_Baseline_Tonnes || 0) * 0.25).toFixed(1)
+        };
+      });
+  }, []);
+
+  // Top 10 Transition Depots (Verified EV Suitable) with 25% Phased Abatement
+  const top10Abatement = useMemo(() => {
+    return depotsData
+      .filter(d => d.ML_Dominant_Category === 'EV Suitable' && d.Transition_Rank)
+      .sort((a, b) => a.Transition_Rank - b.Transition_Rank)
+      .slice(0, 10)
+      .map(d => {
+        const annualKm = Number(d.Annual_Effective_KM || (d.Avg_Effective_KM ? d.Avg_Effective_KM * 12 : (d['Effective KM'] ? d['Effective KM'] * 12 : 0)));
+        const annualDiesel = Number(d.Annual_Diesel_Litres || (annualKm / 4.08));
+        return {
+          name: d['Depot Name'],
+          rank: d['Transition_Rank'],
+          district: d['District'],
+          baselineCo2: +Number(d['Estimated CO2 (Tonnes)'] || d.Annual_CO2_Baseline_Tonnes || 0).toFixed(1),
+          avoidedCo2: +(Number(d['Estimated CO2 (Tonnes)'] || d.Annual_CO2_Baseline_Tonnes || 0) * 0.25).toFixed(1),
+          avoidedDiesel: Math.round(annualDiesel * 0.25)
+        };
+      });
   }, []);
 
   return (
@@ -51,7 +62,7 @@ export default function EmissionAnalysis() {
             Diesel Emissions Baseline & Carbon Abatement
           </h2>
           <p className="text-sm text-gray-400 font-sans mt-1">
-            Quantitative environmental metrics across all 92 KSRTC depots. Tracks current estimated diesel CO₂ footprint and projected emissions reductions from electric bus deployment.
+            Quantitative emissions evaluation across all 92 KSRTC depots. Explicitly distinguishes existing diesel baseline emissions from scenario-based carbon abatement.
           </p>
         </div>
       </ScrollReveal>
@@ -60,15 +71,15 @@ export default function EmissionAnalysis() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         
         <ScrollReveal yOffset={20} duration={600} delay={50}>
-          <TiltCard maxTilt={5} className="p-6 border-white/10 h-full">
-            <span className="text-[10px] font-mono text-gray-400 uppercase font-bold block">
-              Total Baseline Diesel CO₂
+          <TiltCard maxTilt={5} className="p-6 border-rose-500/20 bg-rose-950/10 h-full">
+            <span className="text-[10px] font-mono text-rose-400 uppercase font-bold block">
+              Annual Diesel CO₂ Baseline
             </span>
             <span className="text-3xl font-bold font-montserrat text-white mt-1 block">
-              {Math.round(projectMetrics.totalEstimatedCo2).toLocaleString('en-IN')} <span className="text-sm font-normal text-gray-400">Tonnes</span>
+              {Math.round(projectMetrics.annualCo2BaselineTonnes).toLocaleString('en-IN')} <span className="text-sm font-normal text-gray-400">T / yr</span>
             </span>
             <span className="text-[10px] text-gray-400 font-mono mt-2 block">
-              Annual statewide diesel emissions across 92 depots
+              Existing statewide emissions baseline (not displaced by default)
             </span>
           </TiltCard>
         </ScrollReveal>
@@ -76,13 +87,13 @@ export default function EmissionAnalysis() {
         <ScrollReveal yOffset={20} duration={600} delay={100}>
           <TiltCard maxTilt={5} className="p-6 border-emerald-500/20 bg-emerald-950/10 h-full">
             <span className="text-[10px] font-mono text-emerald-400 uppercase font-bold block">
-              Expected Scenario CO₂ Reduction
+              25% Phased Scenario Avoided CO₂
             </span>
             <span className="text-3xl font-bold font-montserrat text-electric mt-1 block">
-              {projectMetrics.optimizationScenario.totals.expectedAnnualCo2ReductionTonnes.toFixed(1)} <span className="text-sm font-normal text-gray-400">T/yr</span>
+              {projectMetrics.potentialCo2Avoided25pctTonnes.toLocaleString('en-IN')} <span className="text-sm font-normal text-gray-400">T / yr</span>
             </span>
             <span className="text-[10px] text-gray-400 font-mono mt-2 block">
-              From 100 allocated EV buses in decision scenario
+              Emissions avoided at 25% statewide fleet electrification
             </span>
           </TiltCard>
         </ScrollReveal>
@@ -90,13 +101,13 @@ export default function EmissionAnalysis() {
         <ScrollReveal yOffset={20} duration={600} delay={150}>
           <TiltCard maxTilt={5} className="p-6 border-white/10 h-full">
             <span className="text-[10px] font-mono text-gray-400 uppercase font-bold block">
-              Avg CO₂ Reduction / Bus
+              Annual Diesel Baseline
             </span>
-            <span className="text-3xl font-bold font-montserrat text-emerald-400 mt-1 block">
-              54.56 <span className="text-sm font-normal text-gray-400">T / bus</span>
+            <span className="text-3xl font-bold font-montserrat text-amber-400 mt-1 block">
+              {(projectMetrics.annualDieselLitres / 1e6).toFixed(2)}M <span className="text-sm font-normal text-gray-400">Litres</span>
             </span>
             <span className="text-[10px] text-gray-400 font-mono mt-2 block">
-              Average diesel emissions displaced per EV bus
+              Statewide annual diesel consumption across 92 depots
             </span>
           </TiltCard>
         </ScrollReveal>
@@ -104,13 +115,13 @@ export default function EmissionAnalysis() {
         <ScrollReveal yOffset={20} duration={600} delay={200}>
           <TiltCard maxTilt={5} className="p-6 border-white/10 h-full">
             <span className="text-[10px] font-mono text-gray-400 uppercase font-bold block">
-              Scenario Abatement Depots
+              CO₂ Emission Factor
             </span>
-            <span className="text-3xl font-bold font-montserrat text-white mt-1 block">
-              5 Depots
+            <span className="text-3xl font-bold font-montserrat text-emerald-400 mt-1 block">
+              2.68 <span className="text-sm font-normal text-gray-400">kg CO₂ / L</span>
             </span>
             <span className="text-[10px] text-gray-400 font-mono mt-2 block">
-              KANNUR, KOLLAM, KANGANGAD, KASARGODE, KOTTAYAM
+              Standard diesel fuel emission intensity factor
             </span>
           </TiltCard>
         </ScrollReveal>
@@ -128,45 +139,53 @@ export default function EmissionAnalysis() {
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div>
                   <h3 className="text-base font-bold font-montserrat text-white">
-                    {viewMode === 'allocated' 
-                      ? 'Annual CO₂ Reduction from Allocated EV Buses' 
-                      : 'Top 10 Depots by Baseline Diesel CO₂ Footprint'}
+                    {viewMode === 'phased' 
+                      ? 'Top 10 Depots: 25% Phased Scenario Avoided CO₂' 
+                      : 'Top 10 Depots by Annual Diesel CO₂ Baseline'}
                   </h3>
                   <span className="text-xs text-gray-400 font-sans mt-0.5 block">
-                    {viewMode === 'allocated'
-                      ? 'Expected emissions avoided per year (Tonnes) by deployed EV buses.'
-                      : 'Current baseline annual diesel emissions (Tonnes).'}
+                    {viewMode === 'phased'
+                      ? 'Projected avoided carbon emissions per year (Tonnes) under 25% transition.'
+                      : 'Current baseline annual diesel emissions footprint (Tonnes).'}
                   </span>
                 </div>
 
                 <div className="flex rounded-lg bg-charcoal-dark border border-white/10 p-0.5 text-xs font-mono">
                   <button
-                    onClick={() => setViewMode('allocated')}
-                    className={`px-3 py-1 rounded-md transition-all ${viewMode === 'allocated' ? 'bg-emerald-500/20 text-electric font-bold' : 'text-gray-400 hover:text-white'}`}
+                    onClick={() => setViewMode('phased')}
+                    className={`px-3 py-1 rounded-md transition-all ${viewMode === 'phased' ? 'bg-emerald-500/20 text-electric font-bold' : 'text-gray-400 hover:text-white'}`}
                   >
-                    Scenario Reductions
+                    25% Phased Avoided
                   </button>
                   <button
                     onClick={() => setViewMode('baseline')}
                     className={`px-3 py-1 rounded-md transition-all ${viewMode === 'baseline' ? 'bg-emerald-500/20 text-electric font-bold' : 'text-gray-400 hover:text-white'}`}
                   >
-                    Top Emitters
+                    Baseline Footprint
                   </button>
                 </div>
               </div>
 
               <div className="h-[300px] w-full pt-4">
                 <ResponsiveContainer width="100%" height="100%">
-                  {viewMode === 'allocated' ? (
-                    <BarChart data={allocatedEmissions} margin={{ top: 10, right: 10, left: -10, bottom: 25 }}>
+                  {viewMode === 'phased' ? (
+                    <BarChart data={top10Abatement} margin={{ top: 10, right: 10, left: -10, bottom: 35 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                      <XAxis dataKey="name" stroke="#9ca3af" fontSize={11} tickLine={false} />
-                      <YAxis stroke="#9ca3af" fontSize={11} tickLine={false} unit=" T" />
+                      <XAxis 
+                        dataKey="name" 
+                        stroke="#9ca3af" 
+                        fontSize={10} 
+                        angle={-35} 
+                        textAnchor="end" 
+                        interval={0} 
+                        tickLine={false} 
+                      />
+                      <YAxis stroke="#9ca3af" fontSize={10} tickLine={false} unit=" T" />
                       <Tooltip 
                         contentStyle={{ backgroundColor: '#0f172a', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '11px' }}
-                        formatter={(val) => [`${val} Tonnes`, 'Annual CO₂ Reduction']}
+                        formatter={(val) => [`${val} Tonnes`, '25% Phased Avoided CO₂']}
                       />
-                      <Bar dataKey="co2ReductionTonnes" fill="#10b981" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="avoidedCo2" fill="#10b981" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   ) : (
                     <BarChart data={topBaselineEmitters} margin={{ top: 10, right: 10, left: -10, bottom: 35 }}>
@@ -185,9 +204,9 @@ export default function EmissionAnalysis() {
                         contentStyle={{ backgroundColor: '#0f172a', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '11px' }}
                         formatter={(val) => [`${val} Tonnes`, 'Baseline Diesel CO₂']}
                       />
-                      <Bar dataKey="baselineCo2Tonnes" fill="#64748b" radius={[4, 4, 0, 0]}>
+                      <Bar dataKey="baselineCo2Tonnes" fill="#f43f5e" radius={[4, 4, 0, 0]}>
                         {topBaselineEmitters.map((entry, idx) => (
-                          <Cell key={`bar-${idx}`} fill={entry.allocatedEVs > 0 ? '#10b981' : '#64748b'} />
+                          <Cell key={`bar-${idx}`} fill={entry.category === 'EV Suitable' ? '#10b981' : '#f43f5e'} />
                         ))}
                       </Bar>
                     </BarChart>
@@ -195,47 +214,60 @@ export default function EmissionAnalysis() {
                 </ResponsiveContainer>
               </div>
 
+              <div className="flex items-center justify-between text-[10px] font-mono text-gray-400 pt-2 border-t border-white/5">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                  EV Suitable Candidate Depots
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                  Baseline Diesel Emitters
+                </span>
+              </div>
+
             </div>
           </ScrollReveal>
         </div>
 
-        {/* Breakdown of Allocated Depots (5 cols) */}
+        {/* Top 10 Transition Depots Ledger (5 cols) */}
         <div className="lg:col-span-5">
           <ScrollReveal yOffset={25} duration={700} delay={150} className="h-full">
             <div className="glass-card p-6 border-white/5 h-full space-y-6">
               
               <div>
                 <span className="text-[10px] font-mono text-emerald-400 uppercase font-bold tracking-wider block">
-                  SCENARIO ABATEMENT LEDGER
+                  ABATEMENT PRIORITY LEDGER
                 </span>
                 <h3 className="text-base font-bold font-montserrat text-white mt-1">
-                  Depot-wise Carbon Reductions
+                  Top 10 Transition Candidate Abatement
                 </h3>
                 <span className="text-xs text-gray-400 font-sans mt-0.5 block">
-                  Emissions reductions achieved by the 100 allocated EV buses.
+                  CO₂ and diesel fuel reduction under initial 25% conversion.
                 </span>
               </div>
 
-              <div className="space-y-3">
-                {allocatedEmissions.map(depot => (
+              <div className="space-y-3 max-h-[360px] overflow-y-auto pr-1">
+                {top10Abatement.map(depot => (
                   <div key={depot.name} className="p-3.5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-white font-montserrat">{depot.name}</span>
-                        <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                          {depot.evBuses} EVs
+                        <span className="text-xs font-bold text-white font-montserrat">
+                          #{depot.rank} {depot.name}
+                        </span>
+                        <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                          {depot.district}
                         </span>
                       </div>
                       <span className="text-[10px] text-gray-400 font-mono mt-1 block">
-                        Displacement Intensity: {depot.perBusTonnes} T/bus
+                        Diesel Avoided (25%): {Number(depot.avoidedDiesel).toLocaleString()} L/yr
                       </span>
                     </div>
 
                     <div className="text-right font-mono">
                       <span className="text-xs font-bold text-electric block">
-                        {depot.co2ReductionTonnes} T/yr
+                        {depot.avoidedCo2.toLocaleString()} T/yr
                       </span>
-                      <span className="text-[9px] text-gray-500">CO₂ Avoided</span>
+                      <span className="text-[9px] text-gray-500">25% Avoided CO₂</span>
                     </div>
                   </div>
                 ))}
@@ -245,7 +277,7 @@ export default function EmissionAnalysis() {
               <div className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-300 font-sans flex items-start gap-2.5">
                 <Info className="w-4 h-4 shrink-0 mt-0.5 text-blue-400" />
                 <p>
-                  <strong>Methodology Note:</strong> The project's CO₂ metric represents the project's diesel-emission calculation based on fuel consumption per effective kilometer across KSRTC routes. No simulated or lifecycle emission figures are invented.
+                  <strong>Methodology Note:</strong> Baseline diesel CO₂ (251,725.95 T/yr) represents current operational footprint across all 92 depots (0.00268 Tonnes CO₂ / Litre). Avoided CO₂ applies specifically to modeled transition scenarios.
                 </p>
               </div>
 
