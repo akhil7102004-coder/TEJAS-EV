@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Leaf, Zap, BarChart3, ChevronRight, Activity, MapPin, Sun, Moon, Shield } from 'lucide-react';
 import TejasLogo from '../components/TejasLogo';
 import InteractiveBackground from '../components/InteractiveBackground';
+import logoImg from '../assets/TEJAS-2.png';
 
 export default function LandingPage({ setPage, theme, toggleTheme }) {
   const [scrollY, setScrollY] = useState(0);
@@ -138,7 +139,16 @@ export default function LandingPage({ setPage, theme, toggleTheme }) {
             </div>
 
             {/* Interactive HUD Preview Card (5 cols) */}
-            <div className="lg:col-span-5 flex justify-center relative z-20">
+            <div className="lg:col-span-5 flex flex-col items-center justify-center gap-5 relative z-20">
+              <div className="relative w-full max-w-[300px] aspect-square rounded-full p-1 shadow-[0_0_55px_rgba(16,185,129,0.18)] animate-float">
+                <div className="absolute -inset-3 rounded-full border border-emerald-400/10 pointer-events-none"></div>
+                <img
+                  src={logoImg}
+                  alt="TEJAS Transport Electrification and Journey Analytics System"
+                  className="relative z-10 h-full w-full rounded-full object-contain"
+                />
+              </div>
+
               <div className="w-full max-w-[420px] glass-card p-6 border-emerald-500/10 relative overflow-hidden animate-float">
                 <div className="absolute inset-0 dot-grid opacity-30 pointer-events-none"></div>
 

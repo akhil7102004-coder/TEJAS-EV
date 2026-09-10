@@ -308,7 +308,7 @@ export default function PredictionCentre() {
                     const rankNum = depot.Final_Priority_Rank || depot['Transition_Rank'];
                     return (
                       <option key={depId} value={depId}>
-                        {isRanked ? `#${rankNum}` : '—'} {depName} ({depot['District']}) — {depot['ML_Dominant_Category']}
+                        {isRanked ? `#${rankNum}` : '—'} {depName} ({depot['District']})
                       </option>
                     );
                   })}

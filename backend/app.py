@@ -33,14 +33,20 @@ TERRAIN_SCORES = {
     'Steep': 0.20
 }
 
-# Resolve model path - prioritizing the corrected terrain model
+# Resolve model path from the project root
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
 possible_paths = [
-    os.path.join(os.path.dirname(__file__), '..', 'TEJAS-EV', 'models', 'tejas_ev_priority_decision_tree_corrected.pkl'),
-    os.path.join(os.path.dirname(__file__), 'tejas_ev_priority_decision_tree_corrected.pkl'),
-    os.path.abspath('TEJAS-EV/models/tejas_ev_priority_decision_tree_corrected.pkl'),
-    os.path.join(os.path.dirname(__file__), '..', 'TEJAS-EV', 'models', 'tejas_ev_priority_decision_tree.pkl'),
-    os.path.join(os.path.dirname(__file__), 'tejas_ev_priority_decision_tree.pkl'),
-    os.path.abspath('TEJAS-EV/models/tejas_ev_priority_decision_tree.pkl')
+    os.path.join(
+        PROJECT_ROOT,
+        'models',
+        'tejas_ev_priority_decision_tree_corrected.pkl'
+    ),
+    os.path.join(
+        PROJECT_ROOT,
+        'models',
+        'tejas_ev_priority_decision_tree.pkl'
+    )
 ]
 
 model_path = None
