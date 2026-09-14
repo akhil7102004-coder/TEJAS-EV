@@ -16,7 +16,7 @@ export default function LandingPage({ setPage, theme, toggleTheme }) {
   }, []);
 
   return (
-    <div className={`relative min-h-screen overflow-hidden ${theme === 'light' ? 'theme-light' : 'bg-charcoal-dark'} font-sans text-gray-100`}>
+    <div className={`page-shell relative min-h-screen overflow-hidden ${theme === 'light' ? 'theme-light' : 'bg-charcoal-dark'} font-sans text-gray-100`}>
       
       {/* Interactive canvas background */}
       <InteractiveBackground theme={theme} />
@@ -48,7 +48,6 @@ export default function LandingPage({ setPage, theme, toggleTheme }) {
             <button onClick={() => setPage('home')} className="px-3.5 py-2 rounded-lg hover:text-white hover:bg-white/5 transition-all">Home</button>
             <button onClick={() => setPage('operational-analysis')} className="px-3.5 py-2 rounded-lg hover:text-white hover:bg-white/5 transition-all">Operational Data</button>
             <button onClick={() => setPage('dashboard')} className="px-3.5 py-2 rounded-lg hover:text-white hover:bg-white/5 transition-all">Dashboard</button>
-            <button onClick={() => setPage('depot-analysis')} className="px-3.5 py-2 rounded-lg hover:text-white hover:bg-white/5 transition-all">Depots</button>
             <button onClick={() => setPage('cost-analysis')} className="px-3.5 py-2 rounded-lg hover:text-white hover:bg-white/5 transition-all">Cost Analysis</button>
             <button onClick={() => setPage('emission-analysis')} className="px-3.5 py-2 rounded-lg hover:text-white hover:bg-white/5 transition-all">Emissions</button>
             <button onClick={() => setPage('prediction-centre')} className="px-3.5 py-2 rounded-lg hover:text-white hover:bg-white/5 transition-all">Prediction Centre</button>
@@ -89,7 +88,7 @@ export default function LandingPage({ setPage, theme, toggleTheme }) {
               </div>
 
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-montserrat leading-[1.1] text-white tracking-tight mb-6">
-                Driving Kerala <br />
+                Driving Keralam <br />
                 Towards <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-emerald-300 to-electric text-glow-electric">Sustainable</span> <br />
                 Public Transportation
               </h1>

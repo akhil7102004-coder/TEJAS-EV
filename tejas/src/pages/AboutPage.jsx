@@ -48,7 +48,7 @@ export default function AboutPage() {
             PROJECT OVERVIEW & MODEL SPECIFICATION
           </span>
           <h2 className="text-3xl font-bold font-montserrat text-white mt-1">
-            About TEJAS-EV Platform
+            About TEJAS Platform
           </h2>
           <p className="text-sm text-gray-400 font-sans mt-1">
             Transport Electrification and Journey Analytics System: Decision-Support Framework for Evaluating Diesel-to-EV Transition Across 92 KSRTC Depots.
@@ -231,6 +231,50 @@ export default function AboutPage() {
                 <p className="text-xs text-gray-400 font-sans leading-relaxed">{tech.desc}</p>
               </div>
             ))}
+          </div>
+
+          <div className="glass-card p-6 border-emerald-500/15 bg-emerald-950/10">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+              <div className="space-y-3 max-w-3xl">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                    <Users2 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 font-bold">
+                      Meet Our Group
+                    </span>
+                    <h4 className="text-xl font-bold font-montserrat text-white mt-0.5">
+                      Team behind the TEJAS project
+                    </h4>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-300 font-sans leading-relaxed">
+                  We are a team of four Data Science &amp; Analytics learners at ICT ACADEMY OF KERALA who collaborated to develop TEJAS, a transport electrification and journey analytics platform for KSRTC.
+                </p>
+              </div>
+
+              <div className="lg:min-w-[280px] space-y-3">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-gray-500 font-bold">
+                  Members
+                </span>
+                <div className="grid grid-cols-2 gap-2 text-xs font-mono text-gray-200">
+                  <span className="px-3 py-2 rounded-lg bg-white/5 border border-white/10">Akhil A</span>
+                  <span className="px-3 py-2 rounded-lg bg-white/5 border border-white/10">Aswathy Jain</span>
+                  <span className="px-3 py-2 rounded-lg bg-white/5 border border-white/10">Sreethi S</span>
+                  <span className="px-3 py-2 rounded-lg bg-white/5 border border-white/10">Asna Raliya</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 font-bold">
+                Collaborative Project
+              </span>
+              <span className="text-xs font-mono text-gray-400">
+                Data Science <span className="text-emerald-400">•</span> ML <span className="text-emerald-400">•</span> Analytics <span className="text-emerald-400">•</span> Web
+              </span>
+            </div>
           </div>
         </div>
       </ScrollReveal>

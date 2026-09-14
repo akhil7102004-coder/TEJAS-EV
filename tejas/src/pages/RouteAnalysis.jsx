@@ -170,8 +170,6 @@ export default function RouteAnalysis() {
                   <th className="p-3 pl-4">Route ID</th>
                   <th className="p-3">Depot Name & ID</th>
                   <th className="p-3">District</th>
-                  <th className="p-3">Corridor Origin / Dest</th>
-                  <th className="p-3 text-center">Distance (KM)</th>
                   <th className="p-3">Terrain Class</th>
                   <th className="p-3 text-center">Terrain Score</th>
                   <th className="p-3 pr-4">Terrain Feasibility</th>
@@ -197,16 +195,6 @@ export default function RouteAnalysis() {
                         {c.District}
                       </td>
 
-                      <td className="p-3 font-mono text-[11px] text-gray-400">
-                        {c.Origin_or_Depot} ➔ {c.Destination_or_Corridor}
-                      </td>
-
-                      <td className="p-3 text-center">
-                        <span className="px-2 py-0.5 rounded bg-white/5 text-[10px] font-mono text-gray-500 border border-white/5">
-                          Unavailable
-                        </span>
-                      </td>
-
                       <td className="p-3">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${style.badge}`}>
                           {c.Terrain_Class}
@@ -228,7 +216,7 @@ export default function RouteAnalysis() {
 
                 {filteredCorridors.length === 0 && (
                   <tr>
-                    <td colSpan="8" className="p-8 text-center text-gray-500 font-mono text-xs">
+                    <td colSpan="6" className="p-8 text-center text-gray-500 font-mono text-xs">
                       No corridors match the selected search query or filters.
                     </td>
                   </tr>

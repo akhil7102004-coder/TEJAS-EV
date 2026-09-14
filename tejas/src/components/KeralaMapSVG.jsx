@@ -431,18 +431,6 @@ export default function KeralaMapSVG() {
             <p className="text-xs text-gray-400 font-sans leading-relaxed">
               {activeDistrictData.desc} Part of the KSRTC electrification corridor networks, evaluated using geography slope and transit frequencies.
             </p>
-
-            <div className="grid grid-cols-2 gap-4 pt-2">
-              <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                <span className="text-[9px] text-gray-400 font-bold block uppercase tracking-wider">Depots Count</span>
-                <span className="text-xl font-bold font-montserrat text-white mt-0.5 block">{activeDistrictData.depots}</span>
-              </div>
-              
-              <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                <span className="text-[9px] text-gray-400 font-bold block uppercase tracking-wider">Active Routes</span>
-                <span className="text-xl font-bold font-montserrat text-white mt-0.5 block">{activeDistrictData.routes}</span>
-              </div>
-            </div>
           </div>
 
           <div className="space-y-4 mt-6">
