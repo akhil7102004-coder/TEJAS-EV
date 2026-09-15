@@ -21,7 +21,6 @@ const navItems = [
   { id: 'home', label: 'Home', icon: Compass },
   { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
   { id: 'operational-analysis', label: 'Operational & Demand', icon: Activity },
-  { id: 'depot-analysis', label: 'Depot Analysis', icon: BarChart3 },
   { id: 'route-analysis', label: 'Route Analysis', icon: Zap },
   { id: 'cost-analysis', label: 'Cost Analysis', icon: Landmark },
   { id: 'emission-analysis', label: 'Emissions', icon: Leaf },

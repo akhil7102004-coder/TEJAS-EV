@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Users2, Brain, Database, Award, Info, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Brain, Database, Award, Info, CheckCircle2 } from 'lucide-react';
 import WorkflowDiagram from '../components/WorkflowDiagram';
 import TiltCard from '../components/TiltCard';
 import ScrollReveal from '../components/ScrollReveal';
@@ -48,7 +48,7 @@ export default function AboutPage() {
             PROJECT OVERVIEW & MODEL SPECIFICATION
           </span>
           <h2 className="text-3xl font-bold font-montserrat text-white mt-1">
-            About TEJAS-EV Platform
+            About TEJAS Platform
           </h2>
           <p className="text-sm text-gray-400 font-sans mt-1">
             Transport Electrification and Journey Analytics System: Decision-Support Framework for Evaluating Diesel-to-EV Transition Across 92 KSRTC Depots.
@@ -232,6 +232,7 @@ export default function AboutPage() {
               </div>
             ))}
           </div>
+
         </div>
       </ScrollReveal>
 

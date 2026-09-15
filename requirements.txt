@@ -2,17 +2,18 @@
 pandas
 numpy
 
-# Data visualization
-matplotlib
-seaborn
-
 # Machine Learning
 scikit-learn
+joblib
 
-# Jupyter Notebook
+# Flask API
+Flask
+flask-cors
+gunicorn
+
+# Data visualization / notebooks
+matplotlib
+seaborn
 jupyter
 ipykernel
-
-# Excel  file handling
 openpyxl
-joblib
