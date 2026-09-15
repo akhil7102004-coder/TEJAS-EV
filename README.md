@@ -451,20 +451,6 @@ https://github.com/akhil7102004-coder/TEJAS-EV
 
 ---
 
-## 📸 Screenshots
-
-| Depot Dashboard | EV Priority Prediction |
-|---|---|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Prediction](docs/screenshots/prediction.png) |
-
-| Economic Analysis | Energy Planning |
-|---|---|
-| ![Economic](docs/screenshots/economic.png) | ![Energy](docs/screenshots/energy.png) |
-
-> Add screenshots to a `docs/screenshots/` folder and update the paths above.
-
----
-
 ## 📌 Important Notes
 
 ### Dataset
