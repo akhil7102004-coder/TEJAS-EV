@@ -30,7 +30,6 @@ The platform combines data analysis, machine learning, visualization, economic a
 - [Environment Variables](#-environment-variables)
 - [API Endpoints](#-api-endpoints)
 - [Live Application](#-live-application)
-- [Screenshots](#-screenshots)
 - [Important Notes](#-important-notes)
 - [Academic Context](#-academic-context)
 - [Project Team](#-project-team)
