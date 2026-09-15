@@ -2,11 +2,43 @@
 
 ### KSRTC EV Transition Decision Support System
 
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![React](https://img.shields.io/badge/React-Vite-61DAFB)
+![Flask](https://img.shields.io/badge/Flask-Backend-black)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Status](https://img.shields.io/badge/Status-Prototype-yellow)
+
 TEJAS (Transport Electrification and Journey Analytics System) is a data-driven decision-support platform designed to analyse and support the transition from diesel to electric buses across the Kerala State Road Transport Corporation (KSRTC) network.
 
 The platform combines data analysis, machine learning, visualization, economic analysis, environmental assessment, and web application development to provide insights for EV transition planning at the depot level.
 
 > **Note:** TEJAS is a project/prototype developed for analytical and educational purposes. It is not an official KSRTC system.
+
+---
+
+## 📑 Table of Contents
+
+- [Project Objective](#-project-objective)
+- [Dataset](#-dataset)
+- [Main Modules](#-main-modules)
+- [Machine Learning](#-machine-learning)
+- [Data Science Workflow](#-data-science-workflow)
+- [System Architecture](#️-system-architecture)
+- [Technology Stack](#️-technology-stack)
+- [Project Structure](#-project-structure)
+- [Running the Project Locally](#-running-the-project-locally)
+- [Environment Variables](#-environment-variables)
+- [API Endpoints](#-api-endpoints)
+- [Live Application](#-live-application)
+- [Screenshots](#-screenshots)
+- [Important Notes](#-important-notes)
+- [Academic Context](#-academic-context)
+- [Project Team](#-project-team)
+- [Project Vision](#-project-vision)
+- [Future Scope](#-future-scope)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Acknowledgement](#-acknowledgement)
 
 ---
 
@@ -185,7 +217,13 @@ Visualization & Dashboard
 Web Application
       ↓
 Deployment
-🏗️ System Architecture
+```
+
+---
+
+## 🏗️ System Architecture
+
+```text
                 TEJAS Web Application
                          │
                          ▼
@@ -206,39 +244,55 @@ Deployment
               │ Decision Tree Model │
               │    Scikit-learn     │
               └─────────────────────┘
-Deployment
-Frontend: Vercel
-Backend: Render
-Source Code: GitHub
-Machine Learning: Scikit-learn
-🛠️ Technology Stack
-Programming & Data Science
-Python
-Pandas
-NumPy
-Scikit-learn
-Joblib
-Visualization & Analytics
-Power BI
-Matplotlib
-Seaborn
-Web Development
-React
-Vite
-JavaScript
-Tailwind CSS
-Recharts
-Backend
-Flask
-Flask-CORS
-REST API
-Gunicorn
-Development & Deployment
-Git
-GitHub
-Vercel
-Render
-📁 Project Structure
+```
+
+### Deployment
+
+- **Frontend:** Vercel
+- **Backend:** Render
+- **Source Code:** GitHub
+- **Machine Learning:** Scikit-learn
+
+---
+
+## 🛠️ Technology Stack
+
+### Programming & Data Science
+- Python
+- Pandas
+- NumPy
+- Scikit-learn
+- Joblib
+
+### Visualization & Analytics
+- Power BI
+- Matplotlib
+- Seaborn
+
+### Web Development
+- React
+- Vite
+- JavaScript
+- Tailwind CSS
+- Recharts
+
+### Backend
+- Flask
+- Flask-CORS
+- REST API
+- Gunicorn
+
+### Development & Deployment
+- Git
+- GitHub
+- Vercel
+- Render
+
+---
+
+## 📁 Project Structure
+
+```text
 TEJAS-EV/
 │
 ├── backend/
@@ -275,102 +329,221 @@ TEJAS-EV/
 │
 ├── requirements.txt
 └── README.md
-🚀 Running the Project Locally
-1. Clone the Repository
+```
+
+---
+
+## 🚀 Running the Project Locally
+
+### 1. Clone the Repository
+
+```bash
 git clone https://github.com/akhil7102004-coder/TEJAS-EV.git
 cd TEJAS-EV
-2. Backend Setup
+```
+
+### 2. Backend Setup
 
 Create a Python virtual environment:
 
+```bash
 python -m venv .venv
-Windows
+```
+
+Activate it (Windows):
+
+```bash
 .venv\Scripts\activate
+```
 
 Install dependencies:
 
+```bash
 pip install -r requirements.txt
+```
 
 Run the Flask backend:
 
+```bash
 python backend/app.py
+```
 
 The backend will run locally on:
 
+```
 http://127.0.0.1:5000
+```
 
 Health check:
 
+```
 http://127.0.0.1:5000/api/health
-3. Frontend Setup
+```
+
+### 3. Frontend Setup
 
 Open another terminal:
 
+```bash
 cd tejas
+```
 
 Install dependencies:
 
+```bash
 npm install
+```
 
 Start the development server:
 
+```bash
 npm run dev
+```
 
 The frontend will normally be available at:
 
+```
 http://localhost:5173
-🌐 Live Application
+```
 
-🚀 Live Website:
+---
 
+## 🔐 Environment Variables
+
+Create a `.env` file in `backend/`:
+
+```
+FLASK_ENV=development
+CORS_ORIGIN=http://localhost:5173
+```
+
+Create a `.env` file in `tejas/`:
+
+```
+VITE_API_BASE_URL=http://127.0.0.1:5000
+```
+
+---
+
+## 🔌 API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/health` | Health check for the backend service |
+| GET | `/api/depots` | List all depot records |
+| GET | `/api/depots/<id>` | Get details for a single depot |
+| POST | `/api/predict` | Get EV suitability prediction for a scenario |
+| GET | `/api/impact` | Get OPEX / CO₂ impact summary |
+
+> Update this table to match the actual routes defined in `backend/app.py`.
+
+---
+
+## 🌐 Live Application
+
+**🚀 Live Website:**
 https://tejas-ev.vercel.app
 
-💻 Source Code
+**💻 Source Code**
 
 🔗 GitHub Repository:
-
 https://github.com/akhil7102004-coder/TEJAS-EV
 
-📌 Important Notes
-Dataset
+---
+
+## 📸 Screenshots
+
+| Depot Dashboard | EV Priority Prediction |
+|---|---|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Prediction](docs/screenshots/prediction.png) |
+
+| Economic Analysis | Energy Planning |
+|---|---|
+| ![Economic](docs/screenshots/economic.png) | ![Energy](docs/screenshots/energy.png) |
+
+> Add screenshots to a `docs/screenshots/` folder and update the paths above.
+
+---
+
+## 📌 Important Notes
+
+### Dataset
 
 The project dataset consists of real-world KSRTC-related operational and demand information compiled from publicly available sources. It was prepared and structured for the analytical objectives of this project.
 
-Machine Learning Labels
+### Machine Learning Labels
 
 The EV transition categories are project-defined analytical labels used for modelling and decision-support purposes. They should not be interpreted as official KSRTC electrification decisions.
 
-Impact Estimates
+### Impact Estimates
 
 OPEX, energy, diesel consumption, and CO₂ estimates are based on the assumptions and calculations implemented within the project. They represent analytical estimates rather than actual financial or operational outcomes.
 
-Decision Support
+### Decision Support
 
 TEJAS is a decision-support prototype intended to demonstrate how data analytics and machine learning can contribute to EV transition planning. Actual fleet electrification decisions would require detailed engineering, financial, operational, infrastructure, regulatory, and policy assessments.
 
-🎓 Academic Context
+---
+
+## 🎓 Academic Context
 
 This project was developed as part of the:
 
-Certified Specialist in Data Science and Analytics
+**Certified Specialist in Data Science and Analytics**
 ICT Academy of Kerala
 
 The project provided practical exposure to applying data science techniques to a real-world transportation and sustainability problem.
 
-👥 Project Team
-Akhil A
-Sreethi S
-Asna Raliya
-Aswathy Jain
-🌱 Project Vision
+---
+
+## 👥 Project Team
+
+- Akhil A
+- Sreethi S
+- Asna Raliya
+- Aswathy Jain
+
+---
+
+## 🌱 Project Vision
 
 TEJAS aims to demonstrate how data, analytics, and machine learning can be brought together to support more informed decisions around:
 
-Public Transportation → Operational Efficiency → EV Adoption → Economic Impact → Environmental Sustainability
+**Public Transportation → Operational Efficiency → EV Adoption → Economic Impact → Environmental Sustainability**
 
-⭐ Acknowledgement
+---
+
+## 🔮 Future Scope
+
+- Real-time depot telemetry integration
+- Route-level charging infrastructure optimization
+- Expanded model to include battery degradation and seasonal demand variance
+- Integration with live KSRTC operational feeds (if made available)
+
+---
+
+## 🤝 Contributing
+
+This is an academic project, but suggestions and issues are welcome.
+
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes
+4. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
+
+## ⭐ Acknowledgement
 
 Developed as part of the Certified Specialist in Data Science and Analytics program at ICT Academy of Kerala.
 
-🚍⚡ TEJAS
-From operational data to actionable insights for sustainable transportation.
+---
+
+# 🚍⚡ TEJAS
+*From operational data to actionable insights for sustainable transportation.*
