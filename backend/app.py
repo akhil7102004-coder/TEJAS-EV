@@ -91,7 +91,7 @@ def predict():
 
     data = request.get_json()
     if not data:
-        return jsonify({'error': 'No input data provided'}), 400
+        return jsonify({'error': 'No input data provided....'}), 400
 
     try:
         if isinstance(data, list):
